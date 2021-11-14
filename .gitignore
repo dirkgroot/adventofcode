@@ -1,0 +1,7 @@
+/.idea
+/.lein-*
+/target
+
+profiles.clj
+*.iml
+*.DS_Store
