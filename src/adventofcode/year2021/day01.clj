@@ -4,14 +4,16 @@
 (defn parse-input [input]
   (map #(Integer/parseInt %) (str/split-lines input)))
 
+(defn count-increases [numbers]
+  (count (filter #(apply < %)
+                 (partition 2 1 numbers))))
+
 (defn part1 [input]
-  (count (filter (fn [[x y]] (> y x))
-                 (partition 2 1 input))))
+  (count-increases input))
 
 (defn part2 [input] input
-  (count (filter (fn [[x y]] (> y x))
-                 (partition 2 1
-                            (map #(apply + %) (partition 3 1 input))))))
+  (count-increases (map #(apply + %)
+                        (partition 3 1 input))))
 
 (def puzzle
   {:year        2021
