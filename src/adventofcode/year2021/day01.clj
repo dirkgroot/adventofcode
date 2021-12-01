@@ -11,7 +11,7 @@
 (defn part1 [input]
   (count-increases input))
 
-(defn part2 [input] input
+(defn part2 [input]
   (count-increases (map #(apply + %)
                         (partition 3 1 input))))
 

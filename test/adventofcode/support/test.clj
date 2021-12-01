@@ -18,10 +18,11 @@
          [answer2 time-part2] (utils/measure-time (part2 parsed-input))]
 
      (if-not (= expected-answer1 nil) (is (= expected-answer1 answer1)))
+     (if-not (= expected-answer2 nil) (is (= expected-answer2 answer2)))
+
      (println (format "Puzzle %d-%02d" year day)
               (format "[I/O: %.3f ms | Parse: %.3f ms | Part 1: %.3f ms | Part 2: %.3f ms]"
                       time-io time-parse time-part1 time-part2))
 
-     (if-not (= expected-answer2 nil) (is (= expected-answer2 answer2)))
      (println (str "  Answer 1: " answer1))
      (println (str "  Answer 2: " answer2)))))
