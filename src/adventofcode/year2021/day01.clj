@@ -2,7 +2,7 @@
   (:require [clojure.string :as str]))
 
 (defn parse-input [input]
-  (map #(Integer/parseInt %) (str/split-lines input)))
+  (vec (map #(Integer/parseInt %) (str/split-lines input))))
 
 (defn count-increases [numbers]
   (count (filter #(apply < %)
