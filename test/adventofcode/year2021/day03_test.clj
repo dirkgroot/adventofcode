@@ -3,10 +3,22 @@
             [adventofcode.year2021.day03 :as day]))
 
 (def example-input
-  :todo)
+  (day/parse-input
+    "00100
+11110
+10110
+10111
+10101
+01111
+00111
+11100
+10000
+11001
+00010
+01010"))
 
 (deftest part1-example
-  (is (= (day/part1 example-input) :todo)))
+  (is (= (day/part1 example-input) 198)))
 
 (deftest part2-example
-  (is (= (day/part2 example-input) :todo)))
+  (is (= (day/part2 example-input) 230)))

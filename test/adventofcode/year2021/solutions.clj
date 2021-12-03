@@ -25,8 +25,7 @@
             [adventofcode.year2021.day22 :as day22]
             [adventofcode.year2021.day23 :as day23]
             [adventofcode.year2021.day24 :as day24]
-            [adventofcode.year2021.day25 :as day25]
-            ))
+            [adventofcode.year2021.day25 :as day25]))
 
 (deftest day01 (test/test-puzzle day01/puzzle))
 (deftest day02 (test/test-puzzle day02/puzzle))
