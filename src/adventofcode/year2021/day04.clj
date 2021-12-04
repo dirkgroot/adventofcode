@@ -6,11 +6,29 @@
   (Integer/parseInt str))
 
 (defn parse-random-numbers [input]
-  (vec (map parse-int (str/split input #","))))
+  (->> input
+       (#(str/split % #","))
+       (map parse-int)
+       (vec)))
+
+(defn rows [numbers]
+  (partition 5 numbers))
+
+(defn cols [numbers]
+  (->> numbers
+       (partition 5)
+       (apply interleave)
+       (partition 5)))
 
 (defn parse-boards [input]
-  (vec (map #(map parse-int (str/split (str/trim %) #"[ \n]+"))
-            input)))
+  (map
+    #(let [cells (->> %
+                      (str/trim)
+                      ((fn [s] (str/split s #"[ \n]+")))
+                      (map parse-int))]
+       {:rows (map set (rows cells))
+        :cols (map set (cols cells))})
+    input))
 
 (defn parse-input [input]
   (let [chunks (str/split input #"\n\n")
@@ -18,18 +36,11 @@
         board-strings (rest chunks)]
     [(parse-random-numbers random-numbers-string) (parse-boards board-strings)]))
 
-(defn rows [numbers]
-  (partition 5 numbers))
-
-(defn cols [numbers]
-  (partition 5 (apply interleave (rows numbers))))
-
-(defn is-winner? [drawn board]
+(defn is-winner? [drawn {rows :rows cols :cols}]
   (let [any? (complement not-any?)
-        rows (map set (rows board))
-        cols (map set (cols board))]
-    (or (any? #(set/subset? % (set drawn)) rows)
-        (any? #(set/subset? % (set drawn)) cols))))
+        drawn (set drawn)]
+    (or (any? #(set/subset? % drawn) rows)
+        (any? #(set/subset? % drawn) cols))))
 
 (defn map-turns-to-winners
   ([numbers boards] (filter #(not-empty (second %)) (map-turns-to-winners numbers boards 1)))
@@ -41,19 +52,17 @@
              {win true rest false} (group-by #(is-winner? drawn %) boards)]
          (cons [drawn (first win)] (map-turns-to-winners numbers rest (inc turn))))))))
 
-(defn calculate-score [drawn board]
-  (* (last drawn)
-     (reduce + (set/difference (set board) (set drawn)))))
+(defn winner-score [fn numbers boards]
+  (let [turn-winners (map-turns-to-winners numbers boards)
+        [drawn {rows :rows}] (fn turn-winners)
+        non-marked (set/difference (apply set/union rows) (set drawn))]
+    (* (last drawn) (reduce + non-marked))))
 
 (defn part1 [[numbers boards]]
-  (let [turn-winners (map-turns-to-winners numbers boards)
-        [drawn board] (first turn-winners)]
-    (calculate-score drawn board)))
+  (winner-score first numbers boards))
 
 (defn part2 [[numbers boards]]
-  (let [turn-winners (map-turns-to-winners numbers boards)
-        [drawn board] (last turn-winners)]
-    (calculate-score drawn board)))
+  (winner-score last numbers boards))
 
 (def puzzle
   {:year        2021
