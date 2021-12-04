@@ -22,12 +22,12 @@
      :marked #{}}))
 
 (defn parse-boards [input]
-  (seq (map #(parse-board %) input)))
+  (doall (map #(parse-board %) input)))
 
 (defn parse-random-numbers [input]
   (->> (str/split input #",")
        (map parse-int)
-       (seq)))
+       (doall)))
 
 (defn parse-input [input]
   (let [chunks (str/split input #"\n\n")
@@ -64,10 +64,20 @@
 (defn part2 [[numbers boards]]
   (winner-score last numbers boards))
 
+(defn randomize [[numbers boards]]
+  [(shuffle numbers)
+   (doall (map (fn [board]
+                 (let [numbers (shuffle (reduce set/union (:rows board)))]
+                   (assoc board
+                     :rows (map set (rows numbers))
+                     :cols (map set (cols numbers)))))
+               boards))])
+
 (def puzzle
   {:year        2021
    :day         4
    :parse-input parse-input
+   :randomize   randomize
    :part1       part1
    :part2       part2
    :answer1     12796
