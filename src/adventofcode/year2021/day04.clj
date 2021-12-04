@@ -6,24 +6,17 @@
   (Integer/parseInt str))
 
 (defn parse-random-numbers [input]
-  (map parse-int (str/split input #",")))
+  (vec (map parse-int (str/split input #","))))
 
 (defn parse-boards [input]
-  (map #(hash-map :numbers (vec (map parse-int (str/split (str/trim %) #"[ \n]+")))
-                  :marked #{})
-       input))
+  (vec (map #(map parse-int (str/split (str/trim %) #"[ \n]+"))
+            input)))
 
 (defn parse-input [input]
   (let [chunks (str/split input #"\n\n")
         random-numbers-string (first chunks)
         board-strings (rest chunks)]
     [(parse-random-numbers random-numbers-string) (parse-boards board-strings)]))
-
-(defn mark-board [board number]
-  (update-in board [:marked]
-             #(if (some (partial = number) (board :numbers))
-                (conj % number)
-                %)))
 
 (defn rows [numbers]
   (partition 5 numbers))
@@ -35,39 +28,32 @@
   (let [any? (complement not-any?)
         rows (map set (rows board))
         cols (map set (cols board))]
-    (or (any? #(set/subset? % drawn) rows)
-        (any? #(set/subset? % drawn) cols))))
+    (or (any? #(set/subset? % (set drawn)) rows)
+        (any? #(set/subset? % (set drawn)) cols))))
 
-(defn find-winners [boards]
-  (filter #(is-winner? (:marked %) (:numbers %)) boards))
+(defn map-turns-to-winners
+  ([numbers boards] (filter #(not-empty (second %)) (map-turns-to-winners numbers boards 1)))
+  ([numbers boards turn]
+   (lazy-seq
+     (if (> turn (count numbers))
+       '()
+       (let [drawn (take turn numbers)
+             {win true rest false} (group-by #(is-winner? drawn %) boards)]
+         (cons [drawn (first win)] (map-turns-to-winners numbers rest (inc turn))))))))
 
-(defn find-winner [boards]
-  (first (find-winners boards)))
-
-(defn sum-of-unmarked [{numbers :numbers marked :marked}]
-  (reduce + (set/difference (set numbers) marked)))
+(defn calculate-score [drawn board]
+  (* (last drawn)
+     (reduce + (set/difference (set board) (set drawn)))))
 
 (defn part1 [[numbers boards]]
-  (loop [boards boards
-         [n & ns] numbers]
-    (let [updated-boards (map #(mark-board % n) boards)
-          winner (find-winner updated-boards)]
-      (if (nil? winner)
-        (recur updated-boards ns)
-        (* n (sum-of-unmarked winner))))))
+  (let [turn-winners (map-turns-to-winners numbers boards)
+        [drawn board] (first turn-winners)]
+    (calculate-score drawn board)))
 
 (defn part2 [[numbers boards]]
-  (loop [boards boards
-         [n & ns] numbers
-         last-winner nil
-         winning-move nil]
-    (if (nil? n)
-      (* winning-move (sum-of-unmarked last-winner))
-      (let [updated-boards (map #(mark-board % n) boards)
-            winners (find-winners updated-boards)]
-        (recur (remove #(some (partial = %) winners) updated-boards) ns
-               (if (not (empty? winners)) (first winners) last-winner)
-               (if (not (empty? winners)) n winning-move))))))
+  (let [turn-winners (map-turns-to-winners numbers boards)
+        [drawn board] (last turn-winners)]
+    (calculate-score drawn board)))
 
 (def puzzle
   {:year        2021
