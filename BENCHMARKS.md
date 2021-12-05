@@ -6,20 +6,20 @@ I/O and parse times are measured only once. The benchmarks are done for the actu
 
 ```
 Puzzle 2021-04
-- I/O        : 2,292 ms
-- Parse      : 5,103 ms
+- I/O        : 2,506 ms
+- Parse      : 4,224 ms
 - Iterations : 50
-- Part 1     : [min: 5,701 ms | max: 30,641 ms | median: 13,858 ms | mean: 14,497 ms | stddev: 4,797 ms]
-- Part 2     : [min: 28,346 ms | max: 39,863 ms | median: 30,715 ms | mean: 31,351 ms | stddev: 2,460 ms]
+- Part 1     : [min: 7,007 ms | max: 21,830 ms | median: 11,970 ms | mean: 11,883 ms | stddev: 2,810 ms]
+- Part 2     : [min: 28,600 ms | max: 42,770 ms | median: 31,215 ms | mean: 31,858 ms | stddev: 2,839 ms]
 ```
 
 ## Day 5
 
 ```
 Puzzle 2021-05
-- I/O        : 2,254 ms
-- Parse      : 2,989 ms
+- I/O        : 1,848 ms
+- Parse      : 3,210 ms
 - Iterations : 50
-- Part 1     : [min: 48,967 ms | max: 114,253 ms | median: 55,933 ms | mean: 59,644 ms | stddev: 11,656 ms]
-- Part 2     : [min: 94,517 ms | max: 105,871 ms | median: 98,475 ms | mean: 98,398 ms | stddev: 2,128 ms]
+- Part 1     : [min: 51,913 ms | max: 75,214 ms | median: 57,459 ms | mean: 58,095 ms | stddev: 4,440 ms]
+- Part 2     : [min: 100,936 ms | max: 111,510 ms | median: 103,684 ms | mean: 104,233 ms | stddev: 2,440 ms]
 ```

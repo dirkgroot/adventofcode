@@ -17,6 +17,9 @@
          part2       :part2} puzzle
         [input time-io] (utils/measure-time (utils/read-input year day))
         [parsed-input time-parse] (utils/measure-time (parse-input input))
+        ; Warmup
+        _ (doall (take 10 (iterations part1 parsed-input randomizer)))
+        _ (doall (take 10 (iterations part2 parsed-input randomizer)))
         number-of-measurements 50
         measurements-part1 (doall (take number-of-measurements (iterations part1 parsed-input randomizer)))
         measurements-part2 (doall (take number-of-measurements (iterations part2 parsed-input randomizer)))]
