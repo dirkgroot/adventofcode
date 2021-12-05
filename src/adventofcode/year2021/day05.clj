@@ -36,18 +36,17 @@
 (defn is-horizontal-line? [[x1 y1 x2 y2]]
   (or (= x1 x2) (= y1 y2)))
 
-(defn part1 [input]
-  (->> (filter is-horizontal-line? input)
-       (all-covered-points)
+(defn count-points-with-overlapping-lines [lines]
+  (->> (all-covered-points lines)
        (frequencies)
        (filter (fn [[_ v]] (> v 1)))
        (count)))
 
+(defn part1 [input]
+  (count-points-with-overlapping-lines (filter is-horizontal-line? input)))
+
 (defn part2 [input]
-  (->> (all-covered-points input)
-       (frequencies)
-       (filter (fn [[_ v]] (> v 1)))
-       (count)))
+  (count-points-with-overlapping-lines input))
 
 (def puzzle
   {:year        2021
