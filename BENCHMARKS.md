@@ -17,9 +17,9 @@ Puzzle 2021-04
 
 ```
 Puzzle 2021-05
-- I/O        : 2,998 ms
-- Parse      : 4,561 ms
+- I/O        : 2,254 ms
+- Parse      : 2,989 ms
 - Iterations : 50
-- Part 1     : [min: 78,698 ms | max: 237,590 ms | median: 91,987 ms | mean: 96,414 ms | stddev: 24,048 ms]
-- Part 2     : [min: 169,622 ms | max: 249,349 ms | median: 187,006 ms | mean: 191,282 ms | stddev: 15,365 ms]
+- Part 1     : [min: 48,967 ms | max: 114,253 ms | median: 55,933 ms | mean: 59,644 ms | stddev: 11,656 ms]
+- Part 2     : [min: 94,517 ms | max: 105,871 ms | median: 98,475 ms | mean: 98,398 ms | stddev: 2,128 ms]
 ```

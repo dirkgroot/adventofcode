@@ -19,4 +19,4 @@
   (is (= (day/part1 example-input) 5)))
 
 (deftest part2-example
-  (is (= (day/part2 example-input) :todo)))
+  (is (= (day/part2 example-input) 12)))
