@@ -35,3 +35,14 @@ Puzzle 2021-06
 - Part 1     : [min: 0,173 ms | max: 0,336 ms | median: 0,198 ms | mean: 0,218 ms | stddev: 0,042 ms]
 - Part 2     : [min: 0,333 ms | max: 0,652 ms | median: 0,366 ms | mean: 0,386 ms | stddev: 0,064 ms]
 ```
+
+## Day 7
+
+```
+Puzzle 2021-07
+- I/O        : 1,749 ms
+- Parse      : 1,644 ms
+- Iterations : 50
+- Part 1     : [min: 50,564 ms | max: 59,733 ms | median: 52,593 ms | mean: 52,811 ms | stddev: 1,379 ms]
+- Part 2     : [min: 289,335 ms | max: 302,528 ms | median: 294,404 ms | mean: 294,558 ms | stddev: 2,646 ms]
+```
