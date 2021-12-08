@@ -28,17 +28,22 @@
                         "889"     7
                         "89"      1})
 
-(defn translate-output [{output :output translation-map :map}]
-  (->> (map translation-map output)
+(defn translate-output [{output :output map-to-frequency-strings :map-to-frequency-strings}]
+  (->> output
+       (map map-to-frequency-strings)
        (map translation-table)
        (reduce (fn [acc n] (+ (* acc 10) n)))))
 
-(defn map-to-frequencies [patterns]
-  (let [freqs (frequencies (reduce str patterns))]
-    (reduce #(assoc %1 %2 (reduce str (sort (map freqs %2)))) {} patterns)))
+(defn create-map-to-frequency-strings [patterns]
+  (let [freqs (frequencies (reduce str patterns))
+        create-frequency-string #(reduce str (sort (map freqs %)))]
+    (reduce (fn [acc pattern] (assoc acc pattern (create-frequency-string pattern)))
+            {}
+            patterns)))
 
 (defn part2 [input]
-  (->> (map #(assoc % :map (map-to-frequencies (% :patterns))) input)
+  (->> input
+       (map #(assoc % :map-to-frequency-strings (create-map-to-frequency-strings (% :patterns))))
        (map translate-output)
        (reduce +)))
 
