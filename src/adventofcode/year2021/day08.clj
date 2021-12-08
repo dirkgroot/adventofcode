@@ -7,9 +7,8 @@
   (doall
     (->> (str/split-lines input)
          (map #(str/split % #"\s+\|\s+"))
-         (map (fn [[patterns-str output-str]] {:patterns-str (str/replace patterns-str #"\s+" "")
-                                               :patterns     (map set (str/split patterns-str #" "))
-                                               :output       (map set (str/split output-str #" "))})))))
+         (map (fn [[patterns-str output-str]] {:patterns (map set (str/split patterns-str #" "))
+                                               :output   (map set (str/split output-str #" "))})))))
 
 (defn count-1478 [input]
   (->> (input :output)
