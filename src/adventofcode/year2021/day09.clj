@@ -17,35 +17,30 @@
      :nx      nx
      :ny      ny}))
 
+(defn get-height [heights x y]
+  (nth (nth heights y) x))
+
 (defn neighbors [x y]
   [[(dec x) y] [(inc x) y] [x (dec y)] [x (inc y)]])
 
 (defn neighbor-heights [heights x y]
-  [(nth (nth heights y) (dec x))
-   (nth (nth heights y) (inc x))
-   (nth (nth heights (dec y)) x)
-   (nth (nth heights (inc y)) x)])
+  (map (fn [[x y]] (get-height heights x y))
+       (neighbors x y)))
 
-(defn is-low-point [{heights :heights} [x y]]
+(defn is-low-point [heights [x y]]
   (let [height (nth (nth heights y) x)
-        neighbors (neighbor-heights heights x y)]
-    (every? #(< height %) neighbors)))
+        neighbor-heights (neighbor-heights heights x y)]
+    (every? #(< height %) neighbor-heights)))
 
 (defn all-coords [nx ny]
   (apply concat (map (fn [y] (map (fn [x] [x y]) (range 1 (inc nx)))) (range 1 (inc ny)))))
 
-(defn get-height [heights x y]
-  (nth (nth heights y) x))
-
-(defn part1 [input]
-  (let [heights (input :heights)
-        nx (input :nx)
-        ny (input :ny)]
-    (->> (all-coords nx ny)
-         (filter #(is-low-point input %))
-         (map (fn [[x y]] (get-height heights x y)))
-         (map inc)
-         (reduce +))))
+(defn part1 [{heights :heights nx :nx ny :ny}]
+  (->> (all-coords nx ny)
+       (filter #(is-low-point heights %))
+       (map (fn [[x y]] (get-height heights x y)))
+       (map inc)
+       (reduce +)))
 
 (defn get-basin [heights [x y]]
   (lazy-seq
@@ -55,17 +50,14 @@
             basin-neighbors (filter (fn [[nx ny]] (> 9 (get-height heights nx ny) height)) neighbors)]
         (cons [x y] (apply concat (map #(get-basin heights %) basin-neighbors)))))))
 
-(defn part2 [input]
-  (let [heights (input :heights)
-        nx (input :nx)
-        ny (input :ny)]
-    (->> (all-coords nx ny)
-         (filter #(is-low-point input %))
-         (map #(get-basin heights %))
-         (sort-by #(- (count %)))
-         (take 3)
-         (map #(count %))
-         (reduce *))))
+(defn part2 [{heights :heights nx :nx ny :ny}]
+  (->> (all-coords nx ny)
+       (filter #(is-low-point heights %))
+       (map #(get-basin heights %))
+       (sort-by #(- (count %)))
+       (take 3)
+       (map #(count %))
+       (reduce *)))
 
 (def puzzle
   {:year        2021
