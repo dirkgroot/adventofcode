@@ -4,21 +4,23 @@
 
 (defn parse-map [input]
   (->> (str/split-lines input)
-       (map (fn [line] (map #(Integer/parseInt (str %)) line)))))
+       (map (fn [line] (map #(Integer/parseInt (str %)) line)))
+       (vec)))
 
 (defn parse-input [input]
   (let [height-map (parse-map input)
-        nx (count (nth height-map 0))
+        nx (count (get height-map 0))
         ny (count height-map)
-        dummy-row (repeat (+ nx 2) 9)]
+        dummy-row (into [] (repeat (+ nx 2) 9))]
     {:heights (->> height-map
-                   (map #(cons 9 (concat % '(9))))
-                   (#(cons dummy-row (concat % [dummy-row]))))
+                   (map #(into [] (cons 9 (concat % '(9)))))
+                   (#(cons dummy-row (concat % [dummy-row])))
+                   (vec))
      :nx      nx
      :ny      ny}))
 
 (defn get-height [heights x y]
-  (nth (nth heights y) x))
+  (get (get heights y) x))
 
 (defn neighbors [x y]
   [[(dec x) y] [(inc x) y] [x (dec y)] [x (inc y)]])
@@ -28,7 +30,7 @@
        (neighbors x y)))
 
 (defn is-low-point [heights [x y]]
-  (let [height (nth (nth heights y) x)
+  (let [height (get-height heights x y)
         neighbor-heights (neighbor-heights heights x y)]
     (every? #(< height %) neighbor-heights)))
 
@@ -43,12 +45,11 @@
        (reduce +)))
 
 (defn get-basin [heights [x y]]
-  (lazy-seq
-    (distinct
-      (let [height (get-height heights x y)
-            neighbors (neighbors x y)
-            basin-neighbors (filter (fn [[nx ny]] (> 9 (get-height heights nx ny) height)) neighbors)]
-        (cons [x y] (apply concat (map #(get-basin heights %) basin-neighbors)))))))
+  (distinct
+    (let [height (get-height heights x y)
+          neighbors (neighbors x y)
+          basin-neighbors (filter (fn [[nx ny]] (> 9 (get-height heights nx ny) height)) neighbors)]
+      (cons [x y] (apply concat (map #(get-basin heights %) basin-neighbors))))))
 
 (defn part2 [{heights :heights nx :nx ny :ny}]
   (->> (all-coords nx ny)
