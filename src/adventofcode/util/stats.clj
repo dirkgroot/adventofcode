@@ -1,4 +1,4 @@
-(ns adventofcode.support.stats)
+(ns adventofcode.util.stats)
 
 (defn mean [coll]
   (/ (reduce + coll) (count coll)))

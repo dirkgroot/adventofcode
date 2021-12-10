@@ -1,5 +1,5 @@
 (ns adventofcode.support.benchmark
-  (:require [adventofcode.support.stats :as stats]
+  (:require [adventofcode.util.stats :as stats]
             [adventofcode.support.utils :as utils]))
 
 (defn iterations [part parsed-input randomizer]
