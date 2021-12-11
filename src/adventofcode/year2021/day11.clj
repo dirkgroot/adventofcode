@@ -9,26 +9,24 @@
        (flatten)
        (vec)))
 
-(def neighbors [-11 -10 -9 -1 1 9 10 11])
-(def neighbors-left-edge [-10 -9 1 10 11])
-(def neighbors-right-edge [-11 -10 -1 9 10])
-
 (defn get-neighbors [index]
-  (->> (cond (= (mod index 10) 0) neighbors-left-edge
-             (= (mod index 10) 9) neighbors-right-edge
-             :else neighbors)
+  (->> (case (mod index 10) 0 [-10 -9 1 10 11]
+                            9 [-11 -10 -1 9 10]
+                            [-11 -10 -9 -1 1 9 10 11])
        (map #(+ index %))
        (filter #(<= 0 % 99))))
 
+(defn apply-flashes [grid flashed]
+  (let [flashed-neighbor-counts (frequencies (flatten (map get-neighbors flashed)))
+        update-energy           (fn [index energy] (+ energy (get flashed-neighbor-counts index 0)))]
+    (->> grid
+         (map-indexed #(if (<= 1 %2 9) (update-energy %1 %2) 0))
+         (vec))))
+
 (defn simulate-flashes [grid]
-  (let [flashed          (filter #(> (get grid %) 9) (range 0 100))
-        neighbors-counts (frequencies (flatten (map get-neighbors flashed)))]
-    (if (empty? flashed)
-      grid
-      (simulate-flashes (vec (map-indexed (fn [idx energy] (cond (> energy 9) 0
-                                                                 (zero? energy) 0
-                                                                 :else (+ energy (get neighbors-counts idx 0))))
-                                          grid))))))
+  (let [flashed (filter #(> (get grid %) 9) (range 0 100))]
+    (if (empty? flashed) grid
+                         (simulate-flashes (apply-flashes grid flashed)))))
 
 (defn step [grid]
   (->> (vec (map inc grid))
@@ -55,6 +53,7 @@
   {:year        2021
    :day         11
    :parse-input parse-input
+   :randomize   identity
    :part1       part1
    :part2       part2
    :answer1     1749

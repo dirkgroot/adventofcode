@@ -46,3 +46,14 @@ Puzzle 2021-07
 - Part 1     : [min: 50,564 ms | max: 59,733 ms | median: 52,593 ms | mean: 52,811 ms | stddev: 1,379 ms]
 - Part 2     : [min: 289,335 ms | max: 302,528 ms | median: 294,404 ms | mean: 294,558 ms | stddev: 2,646 ms]
 ```
+
+## Day 11
+
+```
+Puzzle 2021-11
+- I/O        : 2,173 ms
+- Parse      : 0,689 ms
+- Iterations : 50
+- Part 1     : [min: 17,697 ms | max: 22,480 ms | median: 18,633 ms | mean: 18,831 ms | stddev: 0,984 ms]
+- Part 2     : [min: 36,165 ms | max: 61,923 ms | median: 43,858 ms | mean: 43,929 ms | stddev: 4,738 ms]
+```
