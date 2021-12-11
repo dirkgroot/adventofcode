@@ -28,14 +28,11 @@
     (if (empty? flashed) grid
                          (simulate-flashes (apply-flashes grid flashed)))))
 
-(defn step [grid]
-  (->> (vec (map inc grid))
-       (simulate-flashes)))
-
 (defn simulation [grid]
   (lazy-seq
-    (let [after-step (step grid)]
-      (cons after-step (simulation after-step)))))
+    (let [step-result (->> (vec (map inc grid))
+                           (simulate-flashes))]
+      (cons step-result (simulation step-result)))))
 
 (defn part1 [input]
   (->> (simulation input)
