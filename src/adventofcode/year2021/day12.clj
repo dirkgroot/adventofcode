@@ -2,16 +2,12 @@
   (:require [clojure.pprint :refer :all]))
 
 (defn parse-input [input]
-  (->> (partition 2 (flatten (map (fn [[_ start end]] [start end end start])
-                                  (re-seq #"(.*)-(.*)" input))))
-       (reduce (fn [caves [start end]]
-                 (if (contains? caves start)
-                   (update caves start (fn [cave] (update cave :connected-to #(conj % end))))
-                   (assoc caves start {:name         start
-                                       :connected-to #{end}
-                                       :visited      0
-                                       :small?       (nil? (re-matches #"[A-Z]+" start))})))
-               {})))
+  (->> (group-by first (partition 2 (flatten (map (fn [[_ start end]] [start end end start])
+                                                  (re-seq #"(.*)-(.*)" input)))))
+       (reduce (fn [acc [start connections]] (assoc acc start {:name         start
+                                                               :connected-to (set (map second connections))
+                                                               :visited      0
+                                                               :small?       (nil? (re-matches #"[A-Z]+" start))})) {})))
 
 (defn count-routes
   ([caves small-visits-limit] (count-routes caves small-visits-limit 0 (caves "start")))
