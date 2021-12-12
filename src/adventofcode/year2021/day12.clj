@@ -2,10 +2,8 @@
   (:require [clojure.pprint :refer :all]))
 
 (defn parse-input [input]
-  (->> (re-seq #"(.*)-(.*)" input)
-       (map (fn [[_ start end]] [start end end start]))
-       (flatten)
-       (partition 2)
+  (->> (partition 2 (flatten (map (fn [[_ start end]] [start end end start])
+                                  (re-seq #"(.*)-(.*)" input))))
        (reduce (fn [caves [start end]]
                  (if (contains? caves start)
                    (update caves start (fn [cave] (update cave :connected-to #(conj % end))))
@@ -15,23 +13,24 @@
                                        :small?       (nil? (re-matches #"[A-Z]+" start))})))
                {})))
 
-(defn find-foutes
-  ([caves max-visits-small] (find-foutes caves max-visits-small [] (caves "start")))
-  ([caves max-visits-small route {name :name connected-to :connected-to visited :visited small? :small? :as cave}]
-   (cond (= name "end") [(conj route cave)]
-         (and (= visited 1) (= name "start")) nil
-         (and (= visited 1) small? (some #(and (% :small?) (= max-visits-small (% :visited))) route)) nil
-         (and (= visited max-visits-small) small?) nil
-         :else (let [updated-cave  (update cave :visited inc)
-                     updated-caves (assoc caves name updated-cave)]
-                 (apply concat (map #(find-foutes updated-caves max-visits-small (conj route updated-cave) (caves %))
-                                    connected-to))))))
+(defn count-foutes
+  ([caves small-visits-limit] (count-foutes caves small-visits-limit 0 (caves "start")))
+  ([caves small-visits-limit max-small-visits {name :name connected-to :connected-to visited :visited small? :small?}]
+   (cond (= name "end") 1
+         (and (= name "start") (= visited 1)) 0
+         (and small? (= visited 1) (= max-small-visits small-visits-limit)) 0
+         (and small? (= visited small-visits-limit)) 0
+         :else (let [updated-visited               (inc visited)
+                     updated-max-small-cave-visits (if small? (max max-small-visits updated-visited) max-small-visits)
+                     updated-caves                 (update caves name #(assoc % :visited updated-visited))]
+                 (reduce + (map #(count-foutes updated-caves small-visits-limit updated-max-small-cave-visits (caves %))
+                                connected-to))))))
 
 (defn part1 [input]
-  (count (find-foutes input 1)))
+  (count-foutes input 1))
 
 (defn part2 [input]
-  (count (find-foutes input 2)))
+  (count-foutes input 2))
 
 (def puzzle
   {:year        2021
