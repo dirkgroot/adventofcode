@@ -20,10 +20,10 @@
          (and (= name "start") (= visited 1)) 0
          (and small? (= visited 1) (= max-small-visits small-visits-limit)) 0
          (and small? (= visited small-visits-limit)) 0
-         :else (let [updated-visited               (inc visited)
-                     updated-max-small-cave-visits (if small? (max max-small-visits updated-visited) max-small-visits)
-                     updated-caves                 (update caves name #(assoc % :visited updated-visited))]
-                 (reduce + (map #(count-routes updated-caves small-visits-limit updated-max-small-cave-visits (caves %))
+         :else (let [updated-visited          (inc visited)
+                     updated-max-small-visits (if small? (max max-small-visits updated-visited) max-small-visits)
+                     updated-caves            (update caves name #(assoc % :visited updated-visited))]
+                 (reduce + (map #(count-routes updated-caves small-visits-limit updated-max-small-visits (caves %))
                                 connected-to))))))
 
 (defn part1 [input]
