@@ -8,21 +8,21 @@
            [_ time] (utils/measure-time (part randomized-input))]
        time)))
 
-(defn benchmark-puzzle [puzzle]
-  (let [{year        :year
-         day         :day
-         parse-input :parse-input
-         randomizer  :randomize
-         part1       :part1
-         part2       :part2} puzzle
+(defn benchmark-puzzle [year day]
+  (let [namespace              (symbol (str "adventofcode.year" year ".day" (format "%02d" day)))
+        _                      (require namespace)
+        parse-input            (ns-resolve namespace 'parse-input)
+        randomizer             (ns-resolve namespace 'randomize)
+        part1                  (ns-resolve namespace 'part1)
+        part2                  (ns-resolve namespace 'part2)
         [input time-io] (utils/measure-time (utils/read-input year day))
         [parsed-input time-parse] (utils/measure-time (parse-input input))
         ; Warmup
-        _ (doall (take 10 (iterations part1 parsed-input randomizer)))
-        _ (doall (take 10 (iterations part2 parsed-input randomizer)))
+        _                      (doall (take 10 (iterations part1 parsed-input randomizer)))
+        _                      (doall (take 10 (iterations part2 parsed-input randomizer)))
         number-of-measurements 50
-        measurements-part1 (doall (take number-of-measurements (iterations part1 parsed-input randomizer)))
-        measurements-part2 (doall (take number-of-measurements (iterations part2 parsed-input randomizer)))]
+        measurements-part1     (doall (take number-of-measurements (iterations part1 parsed-input randomizer)))
+        measurements-part2     (doall (take number-of-measurements (iterations part2 parsed-input randomizer)))]
 
     (println (format "Puzzle %d-%02d" year day))
     (println (format "- I/O        : %.3f ms" time-io))

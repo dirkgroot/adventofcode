@@ -11,12 +11,3 @@
 
 (defn part1 [groups] (count-answers set/union groups))
 (defn part2 [groups] (count-answers set/intersection groups))
-
-(def puzzle
-  {:year        2020
-   :day         6
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     6170
-   :answer2     2947})

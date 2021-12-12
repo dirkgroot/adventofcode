@@ -1,7 +1,8 @@
 (ns adventofcode.year2021.day08-test
   (:require [clojure.test :refer :all]
             [clojure.pprint :refer :all]
-            [adventofcode.year2021.day08 :as day]))
+            [adventofcode.year2021.day08 :as day]
+            [adventofcode.support.test :as test]))
 
 (def example-input
   (day/parse-input
@@ -22,3 +23,6 @@ gcafb gcf dcaebfg ecagb gf abcdeg gaef cafbge fdbac fegbdc | fgae cfgab fg bagce
 
 (deftest part2-example
   (is (= (day/part2 example-input) 61229)))
+
+(deftest solution
+  (test/test-puzzle 2021 8 352 936117))

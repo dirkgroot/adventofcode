@@ -40,12 +40,3 @@
        (filter #(every? is-valid? %))
        (map calculate-autocomplete-score)
        (median)))
-
-(def puzzle
-  {:year        2021
-   :day         10
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     311949
-   :answer2     3042730309})

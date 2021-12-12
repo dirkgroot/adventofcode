@@ -19,11 +19,3 @@
   (let [[hpos depth _] (reduce do-command [0 0 0] input)]
     (* hpos depth)))
 
-(def puzzle
-  {:year        2021
-   :day         2
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     1250395
-   :answer2     1451210346})

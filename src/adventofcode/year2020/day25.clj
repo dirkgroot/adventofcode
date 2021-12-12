@@ -14,12 +14,3 @@
 
 (defn part1 [[cardPublicKey doorPublicKey]] (solve cardPublicKey doorPublicKey))
 (defn part2 [_] "Merry Christmas!")
-
-(def puzzle
-  {:year        2020
-   :day         25
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     6408263,
-   :answer2     "Merry Christmas!"})

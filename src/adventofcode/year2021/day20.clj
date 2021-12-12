@@ -9,12 +9,3 @@
 
 (defn part2 [input]
   :todo)
-
-(def puzzle
-  {:year        2021
-   :day         20
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     :todo
-   :answer2     :todo})

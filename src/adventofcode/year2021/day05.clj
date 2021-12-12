@@ -6,7 +6,7 @@
        (map (fn [[_ x1 y1 x2 y2]] {:x1 (Integer/parseInt x1) :y1 (Integer/parseInt y1) :x2 (Integer/parseInt x2) :y2 (Integer/parseInt y2)}))
        (doall)))
 
-(defn randomize-line-order [input]
+(defn randomize [input]
   (shuffle input))
 
 (defn step [a b]
@@ -50,13 +50,3 @@
 
 (defn part2 [input]
   (count-points-with-overlapping-lines input any?))
-
-(def puzzle
-  {:year        2021
-   :day         5
-   :parse-input parse-input
-   :randomize   randomize-line-order
-   :part1       part1
-   :part2       part2
-   :answer1     5774
-   :answer2     18423})

@@ -59,12 +59,3 @@
        (take 3)
        (map #(count %))
        (reduce *)))
-
-(def puzzle
-  {:year        2021
-   :day         9
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     530
-   :answer2     1019494})

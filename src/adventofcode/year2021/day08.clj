@@ -46,12 +46,3 @@
        (map #(assoc % :map-to-frequency-strings (create-map-to-frequency-strings (% :patterns))))
        (map translate-output)
        (reduce +)))
-
-(def puzzle
-  {:year        2021
-   :day         8
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     352
-   :answer2     936117})

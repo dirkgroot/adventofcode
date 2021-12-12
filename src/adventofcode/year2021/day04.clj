@@ -72,13 +72,3 @@
                      :rows (map set (rows numbers))
                      :cols (map set (cols numbers)))))
                boards))])
-
-(def puzzle
-  {:year        2021
-   :day         4
-   :parse-input parse-input
-   :randomize   randomize
-   :part1       part1
-   :part2       part2
-   :answer1     12796
-   :answer2     18063})

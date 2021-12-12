@@ -9,6 +9,8 @@
        (flatten)
        (vec)))
 
+(def randomize identity)
+
 (defn get-neighbors [index]
   (->> (case (mod index 10) 0 [-10 -9 1 10 11]
                             9 [-11 -10 -1 9 10]
@@ -45,13 +47,3 @@
        (take-while #(not-every? zero? %))
        (count)
        (inc)))
-
-(def puzzle
-  {:year        2021
-   :day         11
-   :parse-input parse-input
-   :randomize   identity
-   :part1       part1
-   :part2       part2
-   :answer1     1749
-   :answer2     285})

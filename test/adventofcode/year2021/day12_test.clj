@@ -1,6 +1,7 @@
 (ns adventofcode.year2021.day12-test
   (:require [clojure.test :refer :all]
-            [adventofcode.year2021.day12 :as day]))
+            [adventofcode.year2021.day12 :as day]
+            [adventofcode.support.test :as test]))
 
 (def example-input
   (day/parse-input "start-A
@@ -24,3 +25,6 @@ b-end"))
 
 (deftest part2-example
   (is (= (day/part2 example-input) 36)))
+
+(deftest solution
+  (test/test-puzzle 2021 12 5576 152837))

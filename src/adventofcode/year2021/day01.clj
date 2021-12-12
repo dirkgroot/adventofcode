@@ -14,12 +14,3 @@
 (defn part2 [input]
   (count-increases (map #(apply + %)
                         (partition 3 1 input))))
-
-(def puzzle
-  {:year        2021
-   :day         1
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     1711
-   :answer2     1743})

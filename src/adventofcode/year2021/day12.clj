@@ -27,12 +27,3 @@
 
 (defn part2 [input]
   (count-routes input 2))
-
-(def puzzle
-  {:year        2021
-   :day         12
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     5576
-   :answer2     152837})

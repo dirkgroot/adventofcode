@@ -32,12 +32,3 @@
   (let [oxygen-generator-rating (calculate-rating input >=)
         co2-scrubber-rating (calculate-rating input <)]
     (* oxygen-generator-rating co2-scrubber-rating)))
-
-(def puzzle
-  {:year        2021
-   :day         3
-   :parse-input parse-input
-   :part1       part1
-   :part2       part2
-   :answer1     1307354
-   :answer2     482500})

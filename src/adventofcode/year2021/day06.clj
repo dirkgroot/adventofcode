@@ -32,13 +32,3 @@
 
 (defn part2 [input]
   (number-of-lanternfish-after 256 input))
-
-(def puzzle
-  {:year        2021
-   :day         6
-   :parse-input parse-input
-   :randomize   randomize
-   :part1       part1
-   :part2       part2
-   :answer1     359999
-   :answer2     1631647919273})

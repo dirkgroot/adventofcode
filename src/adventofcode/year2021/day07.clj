@@ -23,13 +23,3 @@
 (defn part2 [input]
   (let [cost-fn (fn [dest] (reduce + (map #(sum-of-range 1 (abs (- dest %))) input)))]
     (min-total-cost cost-fn)))
-
-(def puzzle
-  {:year        2021
-   :day         7
-   :parse-input parse-input
-   :randomize   randomize
-   :part1       part1
-   :part2       part2
-   :answer1     352331
-   :answer2     99266250})
