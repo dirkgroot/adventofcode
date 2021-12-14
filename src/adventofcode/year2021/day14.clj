@@ -8,11 +8,10 @@
 
 (defn apply-rules [pairs rules]
   (reduce (fn [acc [[a b :as pair] count]]
-            (let [insert (get rules pair)]
-              (if insert (-> acc
-                             (update [a insert] #(if (nil? %) count (+ % count)))
-                             (update [insert b] #(if (nil? %) count (+ % count))))
-                         (assoc acc pair count))))
+            (let [insert (rules pair)]
+              (-> acc
+                  (update [a insert] #(if (nil? %) count (+ % count)))
+                  (update [insert b] #(if (nil? %) count (+ % count))))))
           {} pairs))
 
 (defn steps [pairs rules]
