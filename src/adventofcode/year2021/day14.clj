@@ -26,5 +26,4 @@
     (- (apply max freqs) (apply min freqs))))
 
 (defn part1 [[pairs rules]] (solve pairs rules 10))
-
 (defn part2 [[pairs rules]] (solve pairs rules 40))
