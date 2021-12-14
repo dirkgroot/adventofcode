@@ -2,10 +2,33 @@
   (:require [clojure.string :as str]))
 
 (defn parse-input [input]
-  :todo)
+  (let [[pairs rules] (str/split input #"\n\n")]
+    [(frequencies (partition 2 1 "-" pairs))
+     (reduce (fn [acc [_ pair insert]] (assoc acc (vec pair) (first insert))) {} (re-seq #"(.{2}) -> (.)" rules))]))
 
-(defn part1 [input]
-  :todo)
+(defn apply-rules [pairs rules]
+  (reduce (fn [acc [[a b :as pair] count]]
+            (let [insert (get rules pair)]
+              (if insert (-> acc
+                             (update [a insert] #(if (nil? %) count (+ % count)))
+                             (update [insert b] #(if (nil? %) count (+ % count))))
+                         (assoc acc pair count))))
+          {}
+          pairs))
 
-(defn part2 [input]
-  :todo)
+(defn steps [pairs rules]
+  (lazy-seq
+    (let [applied (apply-rules pairs rules)]
+      (cons applied (steps applied rules)))))
+
+(defn solve [pairs rules step-count]
+  (let [polymer          (last (take step-count (steps pairs rules)))
+        char-frequencies (reduce (fn [acc [[a _] count]] (update acc a #(if (nil? %) count (+ % count)))) {} polymer)
+        freqs            (vals char-frequencies)]
+    (- (apply max freqs) (apply min freqs))))
+
+(defn part1 [[pairs rules]]
+  (solve pairs rules 10))
+
+(defn part2 [[pairs rules]]
+  (solve pairs rules 40))
