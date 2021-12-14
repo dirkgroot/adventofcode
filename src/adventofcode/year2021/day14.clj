@@ -16,9 +16,8 @@
           {} pairs))
 
 (defn steps [pairs rules]
-  (lazy-seq
-    (let [applied (apply-rules pairs rules)]
-      (cons applied (steps applied rules)))))
+  (lazy-seq (let [applied (apply-rules pairs rules)]
+              (cons applied (steps applied rules)))))
 
 (defn solve [pairs rules step-count]
   (let [pair-freqs (last (take step-count (steps pairs rules)))
@@ -26,8 +25,6 @@
         freqs      (vals char-freqs)]
     (- (apply max freqs) (apply min freqs))))
 
-(defn part1 [[pairs rules]]
-  (solve pairs rules 10))
+(defn part1 [[pairs rules]] (solve pairs rules 10))
 
-(defn part2 [[pairs rules]]
-  (solve pairs rules 40))
+(defn part2 [[pairs rules]] (solve pairs rules 40))
