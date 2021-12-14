@@ -13,8 +13,7 @@
                              (update [a insert] #(if (nil? %) count (+ % count)))
                              (update [insert b] #(if (nil? %) count (+ % count))))
                          (assoc acc pair count))))
-          {}
-          pairs))
+          {} pairs))
 
 (defn steps [pairs rules]
   (lazy-seq
@@ -22,9 +21,9 @@
       (cons applied (steps applied rules)))))
 
 (defn solve [pairs rules step-count]
-  (let [polymer          (last (take step-count (steps pairs rules)))
-        char-frequencies (reduce (fn [acc [[a _] count]] (update acc a #(if (nil? %) count (+ % count)))) {} polymer)
-        freqs            (vals char-frequencies)]
+  (let [pair-freqs (last (take step-count (steps pairs rules)))
+        char-freqs (reduce (fn [acc [[a _] count]] (update acc a #(if (nil? %) count (+ % count)))) {} pair-freqs)
+        freqs      (vals char-freqs)]
     (- (apply max freqs) (apply min freqs))))
 
 (defn part1 [[pairs rules]]
