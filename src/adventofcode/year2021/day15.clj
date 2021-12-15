@@ -20,11 +20,6 @@
 
 (def infinity (Integer/MAX_VALUE))
 
-(defn all-coords [grid]
-  (for [y (range 0 (count grid))
-        x (range 0 (count (first grid)))]
-    [x y]))
-
 (defn reconstruct-path
   ([came-from goal] (reconstruct-path came-from goal (came-from goal)))
   ([came-from current current-came-from]
@@ -35,8 +30,7 @@
 (defn dijkstra [grid start goal]
   (loop [dist  {start 0}
          prev  {}
-         queue (reduce #(assoc %1 %2 (get dist %2 infinity))
-                       (priority-map) (all-coords grid))]
+         queue (priority-map start 0)]
     (let [[u dist-u] (peek queue)
           queue (pop queue)]
       (if (= u goal)
