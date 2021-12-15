@@ -1,6 +1,7 @@
 (ns adventofcode.year2021.day15
   (:require [clojure.string :as str]
-            [clojure.pprint :refer :all]))
+            [clojure.pprint :refer :all]
+            [clojure.data.priority-map :refer [priority-map]]))
 
 (defn parse-input [input]
   (->> (str/split-lines input)
@@ -17,47 +18,48 @@
 (defn risk [graph [x y]]
   (get (get graph y) x))
 
-(def infinity 1000000)
+(def infinity (Integer/MAX_VALUE))
 
-(defn shortest-path [graph start goal]
-  (letfn [(evaluate-neighbors [current open-set came-from g-score f-score]
-            (loop [[neighbor & rest] (neighbors graph current)
-                   open-set  (disj open-set current)
-                   came-from came-from
-                   g-score   g-score
-                   f-score   f-score]
-              (if (nil? neighbor)
-                [open-set came-from g-score f-score]
-                (let [tentative-score (+ (get g-score current infinity) (risk graph neighbor))]
-                  (if (< tentative-score (get g-score neighbor infinity))
-                    (recur rest
-                           (conj open-set neighbor)
-                           (assoc came-from neighbor current)
-                           (assoc g-score neighbor tentative-score)
-                           (assoc f-score neighbor (+ tentative-score (risk graph neighbor))))
-                    (recur rest open-set came-from g-score f-score))))))
-          (reconstruct-path [came-from current]
-            (loop [path              nil
-                   came-from         came-from
-                   current           current
-                   current-came-from (came-from current)]
-              (if current-came-from
-                (recur (cons current path) came-from current-came-from (came-from current-came-from))
-                path)))]
-    (loop [open-set  #{start}
-           came-from {}
-           g-score   {start 0}
-           f-score   {start (risk graph start)}]
-      (let [current (apply min-key #(get f-score % infinity) open-set)]
-        (if (= current goal)
-          (reconstruct-path came-from current)
-          (let [[open-set came-from g-score f-score] (evaluate-neighbors current open-set came-from g-score f-score)]
-            (recur open-set came-from g-score f-score)))))))
+(defn all-coords [grid]
+  (for [y (range 0 (count grid))
+        x (range 0 (count (first grid)))]
+    [x y]))
+
+(defn reconstruct-path
+  ([came-from goal] (reconstruct-path came-from goal (came-from goal)))
+  ([came-from current current-came-from]
+   (lazy-seq (if current-came-from
+               (cons current (reconstruct-path came-from current-came-from (came-from current-came-from)))
+               nil))))
+
+(defn dijkstra [grid start goal]
+  (loop [dist  {start 0}
+         prev  {}
+         queue (reduce #(assoc %1 %2 (get dist %2 infinity))
+                       (priority-map) (all-coords grid))]
+    (let [[u dist-u] (peek queue)
+          queue (pop queue)]
+      (if (= u goal)
+        (reconstruct-path prev goal)
+        (letfn [(evaluate-neighbors []
+                  (loop [[v & rest-v] (neighbors grid u)
+                         dist  dist
+                         prev  prev
+                         queue queue]
+                    (if (nil? v)
+                      [dist prev queue]
+                      (let [alt (+ dist-u (risk grid v))]
+                        (if (< alt (get dist v infinity))
+                          (recur rest-v (assoc dist v alt) (assoc prev v u) (assoc queue v alt))
+                          (recur rest-v dist prev queue))))))]
+          (let [[dist prev queue] (evaluate-neighbors)]
+            (recur dist prev queue)))))))
 
 (defn lowest-total-risk [grid]
   (let [start [0 0]
-        goal  [(dec (count (first grid))) (dec (count grid))]]
-    (reduce #(+ %1 (risk grid %2)) 0 (shortest-path grid start goal))))
+        goal  [(dec (count (first grid))) (dec (count grid))]
+        path  (dijkstra grid start goal)]
+    (reduce #(+ %1 (risk grid %2)) 0 path)))
 
 (defn part1 [input]
   (lowest-total-risk input))
