@@ -47,7 +47,7 @@
           queue (pop queue)]
       (if (= (first u) goal)
         (reconstruct-path prev goal)
-        (let [[dist prev queue] (time (evaluate-neighbors grid u dist prev queue))]
+        (let [[dist prev queue] (evaluate-neighbors grid u dist prev queue)]
           (recur dist prev queue))))))
 
 (defn lowest-total-risk [grid]
