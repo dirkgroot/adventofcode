@@ -10,13 +10,16 @@
        (map vec)
        (vec)))
 
-(defn neighbors [graph [x y]]
+(defn neighbors [{width :width height :height} [x y]]
   (->> [[(dec x) y] [(inc x) y] [x (dec y)] [x (inc y)]]
-       (filter (fn [[nx ny]] (and (<= 0 nx (dec (count (first graph))))
-                                  (<= 0 ny (dec (count graph))))))))
+       (filter (fn [[nx ny]] (and (<= 0 nx (dec width))
+                                  (<= 0 ny (dec height)))))))
 
-(defn risk [graph [x y]]
-  (get (get graph y) x))
+(defn risk [{grid :grid input-width :input-width input-height :input-height} [x y]]
+  (let [source-x (mod x input-width)
+        source-y (mod y input-height)
+        score    (+ (get (get grid source-y) source-x) (quot x input-width) (quot y input-height) -1)]
+    (inc (mod score 9))))
 
 (def infinity (Integer/MAX_VALUE))
 
@@ -27,49 +30,40 @@
                (cons current (reconstruct-path came-from current-came-from (came-from current-came-from)))
                nil))))
 
-(defn evaluate-neighbors [grid [u dist-u] dist prev queue]
-  (loop [[v & rest-v] (neighbors grid u)
+(defn evaluate-neighbors [cave [pos risk-pos] dist prev queue]
+  (loop [[v & rest-v] (neighbors cave pos)
          dist  dist
          prev  prev
          queue queue]
     (if (nil? v)
       [dist prev queue]
-      (let [alt (+ dist-u (risk grid v))]
+      (let [alt (+ risk-pos (risk cave v))]
         (if (< alt (get dist v infinity))
-          (recur rest-v (assoc dist v alt) (assoc prev v u) (assoc queue v alt))
+          (recur rest-v (assoc dist v alt) (assoc prev v pos) (assoc queue v alt))
           (recur rest-v dist prev queue))))))
 
-(defn dijkstra [grid start goal]
+(defn dijkstra [cave start goal]
   (loop [dist  {start 0}
          prev  {}
          queue (priority-map start 0)]
-    (let [u     (peek queue)
+    (let [[pos _ :as min-risk] (peek queue)
           queue (pop queue)]
-      (if (= (first u) goal)
+      (if (= pos goal)
         (reconstruct-path prev goal)
-        (let [[dist prev queue] (evaluate-neighbors grid u dist prev queue)]
+        (let [[dist prev queue] (evaluate-neighbors cave min-risk dist prev queue)]
           (recur dist prev queue))))))
 
-(defn lowest-total-risk [grid]
+(defn lowest-total-risk [{width :width height :height :as cave}]
   (let [start [0 0]
-        goal  [(dec (count (first grid))) (dec (count grid))]
-        path  (dijkstra grid start goal)]
-    (reduce #(+ %1 (risk grid %2)) 0 path)))
+        path  (dijkstra cave start [(dec width) (dec height)])]
+    (reduce #(+ %1 (risk cave %2)) 0 path)))
 
-(defn part1 [input]
-  (lowest-total-risk input))
+(defn create-cave [input multiplier]
+  {:grid         input
+   :input-width  (count (first input))
+   :input-height (count input)
+   :width        (* (count (first input)) multiplier)
+   :height       (* (count input) multiplier)})
 
-(defn enlarge-grid [input]
-  (let [input-height (count input)
-        input-width  (count (first input))
-        height       (* input-height 5)
-        width        (* input-width 5)]
-    (vec (for [y (range 0 height)]
-           (vec (map (fn [x] (let [source-x (mod x input-width)
-                                   source-y (mod y input-height)
-                                   score    (+ (risk input [source-x source-y]) (quot x input-width) (quot y input-height))]
-                               (if (> score 9) (- score 9) score)))
-                     (range 0 width)))))))
-
-(defn part2 [input]
-  (lowest-total-risk (enlarge-grid input)))
+(defn part1 [input] (lowest-total-risk (create-cave input 1)))
+(defn part2 [input] (lowest-total-risk (create-cave input 5)))
