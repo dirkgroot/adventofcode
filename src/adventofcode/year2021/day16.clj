@@ -77,9 +77,9 @@
     2 (apply min (map calculate-value value))
     3 (apply max (map calculate-value value))
     4 value
-    5 (if (> (calculate-value (first value)) (calculate-value (second value))) 1 0)
-    6 (if (< (calculate-value (first value)) (calculate-value (second value))) 1 0)
-    7 (if (= (calculate-value (first value)) (calculate-value (second value))) 1 0)))
+    5 (if (apply > (map calculate-value value)) 1 0)
+    6 (if (apply < (map calculate-value value)) 1 0)
+    7 (if (apply = (map calculate-value value)) 1 0)))
 
 (defn part2 [input]
   (calculate-value (parse-packet input)))
