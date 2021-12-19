@@ -56,14 +56,15 @@
           :else (recur ns has-split? (conj result n)))))
 
 (defn reduce-number [number]
-  (let [must-explode? (some #(> (:depth %) 4) number)
-        must-split?   (and (not must-explode?) (some #(> (get :value % 0)) number))
-        result        (cond must-explode? (explode number)
-                            must-split? (split number)
-                            :else number)]
-    (if (= result number)
-      number
-      (reduce-number result))))
+  (loop [number number]
+    (let [must-explode? (some #(> (:depth %) 4) number)
+          must-split?   (and (not must-explode?) (some #(> (get :value % 0)) number))
+          result        (cond must-explode? (explode number)
+                              must-split? (split number)
+                              :else number)]
+      (if (= result number)
+        number
+        (recur result)))))
 
 (defn add [n1 n2]
   (let [value (concat [{:depth 1 :leaf? false}]
@@ -87,5 +88,5 @@
 
 (defn part2 [input]
   (let [numbers (for [n1 input n2 input :when (not= n1 n2)]
-                  (add n1 n2))]
-    (magnitude (apply max-key magnitude numbers))))
+                  (magnitude (add n1 n2)))]
+    (apply max numbers)))
