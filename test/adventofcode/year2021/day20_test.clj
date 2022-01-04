@@ -25,7 +25,7 @@
   (is (= (day/get-algorithm-index example-input 1 1) 34)))
 
 (deftest enhance
-  (is (= (day/enhance (day/expand example-input 1))
+  (is (= (day/enhance example-input)
          (assoc example-input
            :width 7
            :height 7
@@ -36,7 +36,7 @@
                    [0 1 0 0 1 1 0]
                    [0 0 1 1 0 0 1]
                    [0 0 0 1 0 1 0]])))
-  (is (= (day/enhance (day/expand example-input2 1))
+  (is (= (day/enhance example-input2)
          (assoc example-input2
            :width 7
            :height 7
@@ -48,7 +48,7 @@
                    [0 1 0 0 1 1 0]
                    [1 1 1 1 0 0 1]
                    [1 1 0 1 0 1 0]])))
-  (is (= (day/enhance (day/expand example-input2 2))
+  (is (= (day/enhance (day/expand example-input2 1))
          (assoc example-input2
            :width 9
            :height 9

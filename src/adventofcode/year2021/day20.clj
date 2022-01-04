@@ -18,23 +18,12 @@
 (defn to-int [bits]
   (reduce #(+ (* %1 2) %2) bits))
 
-(defn get-pixel [{:keys [default image height width]} x y]
-  (if (or (< x 0) (< y 0) (>= x width) (>= y height))
-    default
-    (get (get image y) x)))
+(defn get-pixel [{:keys [default image]} x y]
+  (get (get image y default) x default))
 
 (defn get-algorithm-index [input start-x start-y]
-  (let [index (for [y (range 3) x (range 3)]
-                (get-pixel input (+ start-x x) (+ start-y y)))]
-    (to-int index)))
-
-(defn enhance [{:keys [algorithm height width flip? default] :as input}]
-  (assoc input
-    :default (if flip? (if (zero? default) 1 0) default)
-    :image (->> (vec (for [y (range height)]
-                       (vec (for [x (range width)]
-                              (->> (get-algorithm-index input (dec x) (dec y))
-                                   (get algorithm)))))))))
+  (->> (for [y (range 3) x (range 3)] (get-pixel input (+ start-x x) (+ start-y y)))
+       (to-int)))
 
 (defn expand [{:keys [height width] :as input} count]
   (let [new-height (+ height (* count 2))
@@ -42,21 +31,23 @@
         new-image  (vec (for [y (range new-height)]
                           (vec (for [x (range new-width)]
                                  (get-pixel input (- x count) (- y count))))))]
+    (assoc input :height new-height :width new-width :image new-image)))
+
+(defn enhance [input]
+  (let [{:keys [algorithm height width flip? default] :as input} (expand input 1)]
     (assoc input
-      :height new-height
-      :width new-width
-      :image new-image)))
+      :default (if flip? (if (zero? default) 1 0) default)
+      :image (->> (vec (for [y (range height)]
+                         (vec (for [x (range width)]
+                                (->> (get-algorithm-index input (dec x) (dec y))
+                                     (get algorithm))))))))))
 
 (defn enhance-times [input count]
-  (let [input (expand input (+ count 1))]
-    (last (take count (iterate enhance (enhance input))))))
+  (->> (iterate enhance input) (drop count) (first)))
 
-(defn part1 [input]
-  (let [{image :image} (enhance-times input 2)]
-    (->> (map #(reduce + %) image)
-         (reduce +))))
+(defn count-lit-pixels [{image :image}]
+  (->> (map #(reduce + %) image)
+       (reduce +)))
 
-(defn part2 [input]
-  (let [{image :image} (enhance-times input 50)]
-    (->> (map #(reduce + %) image)
-         (reduce +))))
+(defn part1 [input] (count-lit-pixels (enhance-times input 2)))
+(defn part2 [input] (count-lit-pixels (enhance-times input 50)))
