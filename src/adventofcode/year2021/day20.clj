@@ -1,6 +1,5 @@
 (ns adventofcode.year2021.day20
-  (:require [clojure.string :as str]
-            [clojure.pprint :refer :all]))
+  (:require [clojure.string :as str]))
 
 (defn parse-input [input]
   (let [[algorithm input-image] (str/split input #"\n\n")
