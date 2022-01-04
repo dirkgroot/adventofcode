@@ -25,16 +25,16 @@
   (->> (for [y (range 3) x (range 3)] (get-pixel input (+ start-x x) (+ start-y y)))
        (to-int)))
 
-(defn expand [{:keys [height width] :as input} count]
-  (let [new-height (+ height (* count 2))
-        new-width  (+ width (* count 2))
+(defn expand [{:keys [height width] :as input}]
+  (let [new-height (+ height 2)
+        new-width  (+ width 2)
         new-image  (vec (for [y (range new-height)]
                           (vec (for [x (range new-width)]
-                                 (get-pixel input (- x count) (- y count))))))]
+                                 (get-pixel input (dec x) (dec y))))))]
     (assoc input :height new-height :width new-width :image new-image)))
 
 (defn enhance [input]
-  (let [{:keys [algorithm height width flip? default] :as input} (expand input 1)]
+  (let [{:keys [algorithm height width flip? default] :as input} (expand input)]
     (assoc input
       :default (if flip? (if (zero? default) 1 0) default)
       :image (->> (vec (for [y (range height)]
