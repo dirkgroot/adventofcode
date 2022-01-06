@@ -96,57 +96,6 @@ off x=-70369..-16548,y=22648..78696,z=-1892..86821
 on x=-53470..21291,y=-120233..-33476,z=-44150..38147
 off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"))
 
-(let [cuboids [{:index 0 :on? true :x1 10 :x2 13 :y1 10 :y2 13 :z1 10 :z2 13}
-               {:index 1 :on? false :x1 9 :x2 12 :y1 9 :y2 12 :z1 9 :z2 12}
-               {:index 2 :on? true :x1 10 :x2 11 :y1 10 :y2 11 :z1 10 :z2 11}]]
-  (deftest get-y-pairs-at-x
-    (is (= (day/get-y-pairs-at-x cuboids 9 -50 50)
-           [{:on? false :y1 9 :y2 12}]))
-    (is (= (day/get-y-pairs-at-x cuboids 10 -50 50)
-           [{:on? false :y1 9 :y2 10} {:on? true :y1 10 :y2 11} {:on? false :y1 11 :y2 12} {:on? true :y1 12 :y2 13}]))
-    (is (= (day/get-y-pairs-at-x cuboids 11 -50 50)
-           [{:on? false :y1 9 :y2 10} {:on? false :y1 10 :y2 12} {:on? true :y1 12 :y2 13}]))
-    (is (= (day/get-y-pairs-at-x cuboids 12 -50 50)
-           [{:on? true :y1 10 :y2 13}]))))
-
-(deftest get-squares-at-z
-  (is (= (day/get-squares-at-z small-example-input 9 -50 50 -50 50)
-         [{:on? false :x1 9 :x2 12 :y1 9 :y2 12}]))
-  (is (= (day/get-squares-at-z small-example-input 10 -50 50 -50 50)
-         [{:on? false :x1 9 :x2 10 :y1 9 :y2 12}
-          {:on? false :x1 10 :x2 11 :y1 9 :y2 10}
-          {:on? true :x1 10 :x2 11 :y1 10 :y2 11}
-          {:on? false :x1 10 :x2 11 :y1 11 :y2 12}
-          {:on? true :x1 10 :x2 11 :y1 12 :y2 13}
-          {:on? false :x1 11 :x2 12 :y1 9 :y2 10}
-          {:on? false :x1 11 :x2 12 :y1 10 :y2 12}
-          {:on? true :x1 11 :x2 12 :y1 12 :y2 13}
-          {:on? true :x1 12 :x2 13 :y1 10 :y2 13}]))
-  (is (= (day/get-squares-at-z small-example-input 13 -50 50 -50 50)
-         [{:on? true :x1 11 :x2 14 :y1 11 :y2 14}])))
-
-(deftest get-cuboids-between-z1-z2
-  (is (= (day/get-cuboids-within-bounds small-example-input -50 50 -50 50 9 10)
-         [{:on? false :x1 9 :x2 12 :y1 9 :y2 12 :z1 9 :z2 10}]))
-  (is (= (day/get-cuboids-within-bounds small-example-input -50 50 -50 50 10 11)
-         [{:on? false :x1 9 :x2 10 :y1 9 :y2 12 :z1 10 :z2 11}
-          {:on? false :x1 10 :x2 11 :y1 9 :y2 10 :z1 10 :z2 11}
-          {:on? true :x1 10 :x2 11 :y1 10 :y2 11 :z1 10 :z2 11}
-          {:on? false :x1 10 :x2 11 :y1 11 :y2 12 :z1 10 :z2 11}
-          {:on? true :x1 10 :x2 11 :y1 12 :y2 13 :z1 10 :z2 11}
-          {:on? false :x1 11 :x2 12 :y1 9 :y2 10 :z1 10 :z2 11}
-          {:on? false :x1 11 :x2 12 :y1 10 :y2 12 :z1 10 :z2 11}
-          {:on? true :x1 11 :x2 12 :y1 12 :y2 13 :z1 10 :z2 11}
-          {:on? true :x1 12 :x2 13 :y1 10 :y2 13 :z1 10 :z2 11}]))
-  (is (= (day/get-cuboids-within-bounds small-example-input -50 50 -50 50 13 14)
-         [{:on? true :x1 11 :x2 14 :y1 11 :y2 14 :z1 13 :z2 14}]))
-  )
-
-(deftest count-cuboids-on
-  (is (= (day/count-cubes-on small-example-input -50 50 -50 50 9 10) 0))
-  (is (= (day/count-cubes-on small-example-input -50 50 -50 50 10 11) (+ 1 1 1 3)))
-  (is (= (day/count-cubes-on small-example-input -50 50 -50 50 -50 50) 39)))
-
 (deftest part1-example-small
   (is (= (day/part1 small-example-input) 39)))
 
@@ -155,6 +104,16 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"))
 
 (deftest part2-example
   (is (= (day/part2 example-input-part2) 2758514936282235)))
+
+(deftest get-intersection
+  (is (= (day/get-intersection
+           {:on? true :x1 10 :x2 11 :y1 10 :y2 11 :z1 10 :z2 11}
+           {:on? true :x1 11 :x2 12 :y1 11 :y2 12 :z1 11 :z2 12})
+         nil))
+  (is (= (day/get-intersection
+           {:on? true :x1 11 :x2 12 :y1 11 :y2 12 :z1 11 :z2 12}
+           {:on? true :x1 10 :x2 12 :y1 10 :y2 12 :z1 10 :z2 12})
+         {:on? false :x1 11 :x2 12 :y1 11 :y2 12 :z1 11 :z2 12})))
 
 (deftest solution
   (test/test-puzzle 2021 22 556501 1217140271559773))
