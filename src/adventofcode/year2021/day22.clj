@@ -10,6 +10,10 @@
                        :y1    (Integer/parseInt y1) :y2 (inc (Integer/parseInt y2))
                        :z1    (Integer/parseInt z1) :z2 (inc (Integer/parseInt z2))}))))
 
+(defn xs [cuboids] (distinct (sort (flatten (map #(map % [:x1 :x2]) cuboids)))))
+(defn ys [cuboids] (distinct (sort (flatten (map #(map % [:y1 :y2]) cuboids)))))
+(defn zs [cuboids] (distinct (sort (flatten (map #(map % [:z1 :z2]) cuboids)))))
+
 (defn is-on? [cuboids y1 y2]
   (let [cuboids-at-y1-y2 (filter #(or (<= (:y1 %) y1 (dec (:y2 %)))
                                       (<= (:y1 %) (dec y2) (dec (:y2 %)))
@@ -17,25 +21,20 @@
                                  cuboids)]
     (:on? (if (empty? cuboids-at-y1-y2) false (apply max-key :index cuboids-at-y1-y2)))))
 
-(defn get-y-pairs-at-x [cuboids x]
-  (let [cuboids-at-x (filter #(<= (:x1 %) x (dec (:x2 %))) cuboids)
-        ys           (distinct (sort (flatten (map #(map % [:y1 :y2]) cuboids-at-x))))]
-    (map (fn [[y1 y2]] {:on? (is-on? cuboids-at-x y1 y2)
-                        :y1  y1 :y2 y2})
-         (partition 2 1 ys))))
+(defn get-y-pairs-at-x [cuboids x min-y max-y]
+  (let [cuboids-at-x (filter #(<= (:x1 %) x (dec (:x2 %))) cuboids)]
+    (->> (filter #(<= min-y % max-y) (ys cuboids-at-x))
+         (partition 2 1)
+         (map (fn [[y1 y2]] {:on? (is-on? cuboids-at-x y1 y2) :y1 y1 :y2 y2})))))
 
 (defn get-squares-at-z [cuboids z min-x max-x min-y max-y]
-  (let [cuboids-at-z (filter #(and (<= (:z1 %) z (dec (:z2 %)))
-                                   (or (<= (:x1 %) min-x (:x2 %)) (<= (:x1 %) max-x (:x2 %)) (<= min-x (:x1 %) (:x2 %) max-x))
-                                   (or (<= (:y1 %) min-y (:y2 %)) (<= (:y1 %) max-y (:y2 %)) (<= min-y (:y1 %) (:y2 %) max-y)))
-                             cuboids)
-        xs           (sort (distinct (flatten (map #(map % [:x1 :x2]) cuboids-at-z))))]
-    (->> (partition 2 1 xs)
-         (map (fn [[x1 x2]] (map #(assoc % :x1 x1 :x2 x2) (get-y-pairs-at-x cuboids-at-z x1))))
+  (let [cuboids-at-z (filter #(and (<= (:z1 %) z (dec (:z2 %)))) cuboids)]
+    (->> (partition 2 1 (filter #(<= min-x % max-x) (xs cuboids-at-z)))
+         (map (fn [[x1 x2]] (map #(assoc % :x1 x1 :x2 x2) (get-y-pairs-at-x cuboids-at-z x1 min-y max-y))))
          (flatten))))
 
 (defn get-cuboids-within-bounds [cuboids min-x max-x min-y max-y min-z max-z]
-  (let [zs (sort (distinct (filter #(<= min-z % max-z) (flatten (map #(map % [:z1 :z2]) cuboids)))))]
+  (let [zs (filter #(<= min-z % max-z) (zs cuboids))]
     (flatten (for [[z1 z2] (partition 2 1 (sort (distinct zs)))]
                (map #(assoc % :z1 z1 :z2 z2) (get-squares-at-z cuboids z1 min-x max-x min-y max-y))))))
 
@@ -46,7 +45,7 @@
                 (* (abs (- (min max-x x2) (max min-x x1)))
                    (abs (- (min max-y y2) (max min-y y1)))
                    (abs (- (min max-z z2) (max min-z z1))))))
-         (reduce + 0))))
+         (reduce +))))
 
 (defn part1 [cuboids]
   (count-cubes-on cuboids -50 51 -50 51 -50 51))

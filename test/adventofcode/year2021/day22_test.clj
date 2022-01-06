@@ -100,13 +100,13 @@ off x=-93533..-4276,y=-16170..68771,z=-104985..-24507"))
                {:index 1 :on? false :x1 9 :x2 12 :y1 9 :y2 12 :z1 9 :z2 12}
                {:index 2 :on? true :x1 10 :x2 11 :y1 10 :y2 11 :z1 10 :z2 11}]]
   (deftest get-y-pairs-at-x
-    (is (= (day/get-y-pairs-at-x cuboids 9)
+    (is (= (day/get-y-pairs-at-x cuboids 9 -50 50)
            [{:on? false :y1 9 :y2 12}]))
-    (is (= (day/get-y-pairs-at-x cuboids 10)
+    (is (= (day/get-y-pairs-at-x cuboids 10 -50 50)
            [{:on? false :y1 9 :y2 10} {:on? true :y1 10 :y2 11} {:on? false :y1 11 :y2 12} {:on? true :y1 12 :y2 13}]))
-    (is (= (day/get-y-pairs-at-x cuboids 11)
+    (is (= (day/get-y-pairs-at-x cuboids 11 -50 50)
            [{:on? false :y1 9 :y2 10} {:on? false :y1 10 :y2 12} {:on? true :y1 12 :y2 13}]))
-    (is (= (day/get-y-pairs-at-x cuboids 12)
+    (is (= (day/get-y-pairs-at-x cuboids 12 -50 50)
            [{:on? true :y1 10 :y2 13}]))))
 
 (deftest get-squares-at-z
