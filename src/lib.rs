@@ -2,4 +2,4 @@ pub mod year2023;
 pub mod day00;
 
 #[cfg(test)]
-mod support;
+mod test_support;

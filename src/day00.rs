@@ -16,17 +16,17 @@ fn parse(input: &str) -> i32 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::support;
+    use crate::test_support;
 
     #[test]
     fn part1_solution() {
-        let result = support::do_part(part1, INPUT);
+        let result = test_support::do_part(part1, INPUT);
         assert_eq!(result, 0);
     }
 
     #[test]
     fn part2_solution() {
-        let result = support::do_part(part2, INPUT);
+        let result = test_support::do_part(part2, INPUT);
         assert_eq!(result, 1);
     }
 
