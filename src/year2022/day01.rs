@@ -1,7 +1,7 @@
 use std::collections::BinaryHeap;
 
 pub fn part1(input: &str) -> i32 {
-    *parse(input).iter().max().expect("ERROR")
+    *parse(input).iter().max().unwrap()
 }
 
 pub fn part2(input: &str) -> i32 {
@@ -11,7 +11,7 @@ pub fn part2(input: &str) -> i32 {
 fn parse(input: &str) -> BinaryHeap<i32> {
     input.split("\n\n")
         .map(|group| group.lines()
-            .map(|line| line.parse::<i32>().expect("Invalid input!"))
+            .map(|line| line.parse::<i32>().unwrap())
             .sum()
         )
         .collect()
