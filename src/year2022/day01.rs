@@ -1,20 +1,24 @@
 use std::collections::BinaryHeap;
 
 pub fn part1(input: &str) -> i32 {
-    *parse(input).iter().max().unwrap()
+    parse(input)
+        .max().unwrap()
 }
 
 pub fn part2(input: &str) -> i32 {
-    parse(input).iter().take(3).sum()
+    parse(input)
+        .collect::<BinaryHeap<i32>>().iter()
+        .take(3).sum()
 }
 
-fn parse(input: &str) -> BinaryHeap<i32> {
-    input.split("\n\n")
-        .map(|group| group.lines()
-            .map(|line| line.parse::<i32>().unwrap())
-            .sum()
-        )
-        .collect()
+fn parse(input: &str) -> impl Iterator<Item=i32> + '_ {
+    input.split("\n\n").map(total_energy)
+}
+
+fn total_energy(group: &str) -> i32 {
+    group.lines()
+        .map(|line| line.parse::<i32>().unwrap())
+        .sum()
 }
 
 #[cfg(test)]
