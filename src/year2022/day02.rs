@@ -4,24 +4,30 @@ use crate::year2022::day02::Outcome::{Draw, Lose, Win};
 pub fn part1(input: &str) -> i32 {
     round_strings(input)
         .map(|round| parse_round(round, Move::parse))
-        .fold(0, |acc, (other, me)| acc + me as i32 + match (other, me) {
-            (Rock, Paper) | (Paper, Scissors) | (Scissors, Rock) => Win,
-            (Rock, Rock) | (Paper, Paper) | (Scissors, Scissors) => Draw,
-            (Rock, Scissors) | (Paper, Rock) | (Scissors, Paper) => Lose,
-        } as i32)
+        .fold(0, |acc, (other, me)| {
+            acc + me as i32
+                + match (other, me) {
+                    (Rock, Paper) | (Paper, Scissors) | (Scissors, Rock) => Win,
+                    (Rock, Rock) | (Paper, Paper) | (Scissors, Scissors) => Draw,
+                    (Rock, Scissors) | (Paper, Rock) | (Scissors, Paper) => Lose,
+                } as i32
+        })
 }
 
 pub fn part2(input: &str) -> i32 {
     round_strings(input)
         .map(|round| parse_round(round, Outcome::parse))
-        .fold(0, |acc, (other, outcome)| acc + outcome as i32 + match (other, outcome) {
-            (Rock, Draw) | (Paper, Lose) | (Scissors, Win) => Rock,
-            (Rock, Win) | (Paper, Draw) | (Scissors, Lose) => Paper,
-            (Rock, Lose) | (Paper, Win) | (Scissors, Draw) => Scissors,
-        } as i32)
+        .fold(0, |acc, (other, outcome)| {
+            acc + outcome as i32
+                + match (other, outcome) {
+                    (Rock, Draw) | (Paper, Lose) | (Scissors, Win) => Rock,
+                    (Rock, Win) | (Paper, Draw) | (Scissors, Lose) => Paper,
+                    (Rock, Lose) | (Paper, Win) | (Scissors, Draw) => Scissors,
+                } as i32
+        })
 }
 
-fn round_strings(input: &str) -> impl Iterator<Item=(&str, &str)> {
+fn round_strings(input: &str) -> impl Iterator<Item = (&str, &str)> {
     input.lines().map(|line| line.split_once(" ").unwrap())
 }
 
@@ -30,7 +36,11 @@ fn parse_round<T>(round: (&str, &str), parser: fn(&str) -> T) -> (Move, T) {
 }
 
 #[derive(Copy, Clone)]
-enum Move { Rock = 1, Paper = 2, Scissors = 3 }
+enum Move {
+    Rock = 1,
+    Paper = 2,
+    Scissors = 3,
+}
 
 impl Move {
     fn parse(char: &str) -> Move {
@@ -38,13 +48,17 @@ impl Move {
             "A" | "X" => Rock,
             "B" | "Y" => Paper,
             "C" | "Z" => Scissors,
-            _ => panic!("Invalid input!")
+            _ => panic!("Invalid input!"),
         }
     }
 }
 
 #[derive(Copy, Clone)]
-enum Outcome { Win = 6, Draw = 3, Lose = 0 }
+enum Outcome {
+    Win = 6,
+    Draw = 3,
+    Lose = 0,
+}
 
 impl Outcome {
     fn parse(s: &str) -> Outcome {
@@ -52,7 +66,7 @@ impl Outcome {
             "X" => Lose,
             "Y" => Draw,
             "Z" => Win,
-            _ => panic!("Invalid input!")
+            _ => panic!("Invalid input!"),
         }
     }
 }
@@ -68,17 +82,11 @@ mod tests {
 
     #[test]
     fn part1_solution() {
-        assert_eq!(
-            test_support::do_part(part1, &read_input(DAY)),
-            13484
-        );
+        assert_eq!(test_support::do_part(part1, &read_input(DAY)), 13484);
     }
 
     #[test]
     fn part2_solution() {
-        assert_eq!(
-            test_support::do_part(part2, &read_input(DAY)),
-            13433
-        );
+        assert_eq!(test_support::do_part(part2, &read_input(DAY)), 13433);
     }
 }

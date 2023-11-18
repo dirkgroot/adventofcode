@@ -1,24 +1,23 @@
 use std::collections::BinaryHeap;
 
 pub fn part1(input: &str) -> i32 {
-    parse(input)
-        .max().unwrap()
+    parse(input).max().unwrap()
 }
 
 pub fn part2(input: &str) -> i32 {
     parse(input)
-        .collect::<BinaryHeap<i32>>().iter()
-        .take(3).sum()
+        .collect::<BinaryHeap<i32>>()
+        .iter()
+        .take(3)
+        .sum()
 }
 
-fn parse(input: &str) -> impl Iterator<Item=i32> + '_ {
+fn parse(input: &str) -> impl Iterator<Item = i32> + '_ {
     input.split("\n\n").map(total_energy)
 }
 
 fn total_energy(group: &str) -> i32 {
-    group.lines()
-        .map(|line| line.parse::<i32>().unwrap())
-        .sum()
+    group.lines().map(|line| line.parse::<i32>().unwrap()).sum()
 }
 
 #[cfg(test)]
@@ -32,17 +31,11 @@ mod tests {
 
     #[test]
     fn part1_solution() {
-        assert_eq!(
-            test_support::do_part(part1, &read_input(DAY)),
-            69836
-        );
+        assert_eq!(test_support::do_part(part1, &read_input(DAY)), 69836);
     }
 
     #[test]
     fn part2_solution() {
-        assert_eq!(
-            test_support::do_part(part2, &read_input(DAY)),
-            207968
-        );
+        assert_eq!(test_support::do_part(part2, &read_input(DAY)), 207968);
     }
 }

@@ -8,7 +8,10 @@ pub fn read_input(year: i32, day: i32) -> String {
     fs::read_to_string(file).unwrap()
 }
 
-pub(crate) fn do_part<T>(p: fn(&str) -> T, input: &str) -> T where T: Display {
+pub(crate) fn do_part<T>(p: fn(&str) -> T, input: &str) -> T
+where
+    T: Display,
+{
     let now = Instant::now();
     let result = p(input);
     let elapsed = now.elapsed();

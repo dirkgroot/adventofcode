@@ -21,17 +21,11 @@ mod tests {
 
     #[test]
     fn part1_solution() {
-        assert_eq!(
-            test_support::do_part(part1, &read_input(DAY)),
-            2023
-        );
+        assert_eq!(test_support::do_part(part1, &read_input(DAY)), 2023);
     }
 
     #[test]
     fn part2_solution() {
-        assert_eq!(
-            test_support::do_part(part2, &read_input(DAY)),
-            2023
-        );
+        assert_eq!(test_support::do_part(part2, &read_input(DAY)), 2023);
     }
 }
