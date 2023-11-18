@@ -4,7 +4,7 @@ use crate::year2022::day02::Outcome::{Draw, Lose, Win};
 pub fn part1(input: &str) -> i32 {
     round_strings(input)
         .map(|round| parse_round(round, Move::parse))
-        .fold(0, |acc, round| acc + round.1 as i32 + match round {
+        .fold(0, |acc, (other, me)| acc + me as i32 + match (other, me) {
             (Rock, Paper) | (Paper, Scissors) | (Scissors, Rock) => Win,
             (Rock, Rock) | (Paper, Paper) | (Scissors, Scissors) => Draw,
             (Rock, Scissors) | (Paper, Rock) | (Scissors, Paper) => Lose,
@@ -14,7 +14,7 @@ pub fn part1(input: &str) -> i32 {
 pub fn part2(input: &str) -> i32 {
     round_strings(input)
         .map(|round| parse_round(round, Outcome::parse))
-        .fold(0, |acc, round| acc + round.1 as i32 + match round {
+        .fold(0, |acc, (other, outcome)| acc + outcome as i32 + match (other, outcome) {
             (Rock, Draw) | (Paper, Lose) | (Scissors, Win) => Rock,
             (Rock, Win) | (Paper, Draw) | (Scissors, Lose) => Paper,
             (Rock, Lose) | (Paper, Win) | (Scissors, Draw) => Scissors,
