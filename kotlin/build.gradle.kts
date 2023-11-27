@@ -19,7 +19,7 @@ dependencies {
     testImplementation("io.kotest:kotest-property:5.5.4")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.9.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.9.0")
-    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.25")
+    testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.27.0")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.0")
     testRuntimeOnly("org.junit.platform:junit-platform-console:1.9.0")
 }
