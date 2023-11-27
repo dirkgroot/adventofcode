@@ -1,4 +1,4 @@
-name: Build and test
+name: Build and test Rust solutions
 
 on:
   push:
@@ -16,6 +16,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build
+      working-directory: rust
       run: cargo build --verbose
     - name: Run tests
+      working-directory: rust
       run: cargo test --verbose
