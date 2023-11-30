@@ -14,6 +14,33 @@ pub fn part2(input: &str) -> i32 {
         .unwrap()
 }
 
+fn parse(input: &str) -> (Vec<Section>, Vec<Section>) {
+    let wires = input.lines().collect::<Vec<&str>>();
+    (parse_wire(wires[0]), parse_wire(wires[1]))
+}
+
+fn parse_wire(s: &str) -> Vec<Section> {
+    let mut origin = Coord2D::ORIGIN;
+    s.split(",")
+        .map(|m| {
+            let (s, org) = Section::parse(m, &origin);
+            origin = org;
+            s
+        })
+        .collect()
+}
+
+fn find_intersections<'a>(
+    w1: &'a Vec<Section>,
+    w2: &'a Vec<Section>,
+) -> impl Iterator<Item=Coord2D> + 'a {
+    w1.iter()
+        .flat_map(|s1| w2.iter().map(|s2| s1.intersects_at(s2)))
+        .filter(|i| i.is_some())
+        .map(|i| i.unwrap())
+        .filter(move |i| *i != Coord2D::ORIGIN)
+}
+
 fn steps_to(w1: &Vec<Section>, c: &Coord2D) -> i32 {
     w1.iter()
         .scan((0, false), |(steps, stop), s| {
@@ -30,34 +57,6 @@ fn steps_to(w1: &Vec<Section>, c: &Coord2D) -> i32 {
         .last()
         .unwrap()
         .0
-}
-
-fn find_intersections<'a>(
-    w1: &'a Vec<Section>,
-    w2: &'a Vec<Section>,
-) -> impl Iterator<Item=Coord2D> + 'a {
-    let origin = Coord2D::new(0, 0);
-    w1.iter()
-        .flat_map(|s1| w2.iter().map(|s2| s1.intersects_at(s2)))
-        .filter(|i| i.is_some())
-        .map(|i| i.unwrap())
-        .filter(move |i| *i != origin)
-}
-
-fn parse(input: &str) -> (Vec<Section>, Vec<Section>) {
-    let wires = input.lines().collect::<Vec<&str>>();
-    (parse_wire(wires[0]), parse_wire(wires[1]))
-}
-
-fn parse_wire(s: &str) -> Vec<Section> {
-    let mut origin = Coord2D::new(0, 0);
-    s.split(",")
-        .map(|m| {
-            let (s, org) = Section::parse(m, &origin);
-            origin = org;
-            s
-        })
-        .collect()
 }
 
 #[derive(PartialEq, Debug)]
@@ -152,6 +151,8 @@ struct Coord2D {
 }
 
 impl Coord2D {
+    const ORIGIN: Coord2D = Coord2D { x: 0, y: 0 };
+
     fn new(x: i32, y: i32) -> Coord2D {
         Coord2D { x, y }
     }
