@@ -16,7 +16,7 @@ pub fn part2(input: &str) -> u32 {
             let text_digits = find_text_digits(line);
 
             let mut all_digits = text_digits.chain(digits).collect::<Vec<_>>();
-            all_digits.sort_by(|(_, a), (_, b)| a.partial_cmp(b).unwrap());
+            all_digits.sort_by(|(_, a), (_, b)| a.cmp(b));
             solution(all_digits)
         })
         .sum()
