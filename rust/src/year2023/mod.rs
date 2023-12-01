@@ -1,4 +1,5 @@
 pub mod day00;
+pub mod day01;
 
 #[cfg(test)]
 fn read_input(day: i32) -> String {
