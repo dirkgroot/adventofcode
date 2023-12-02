@@ -24,7 +24,7 @@ pub fn part2(input: &str) -> i32 {
 }
 
 fn parse(input: &str) -> impl Iterator<Item = Game> + '_ {
-    input.lines().map(|l| Game::parse(l))
+    input.lines().map(Game::parse)
 }
 
 struct Game {
