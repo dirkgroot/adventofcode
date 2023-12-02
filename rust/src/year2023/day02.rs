@@ -2,7 +2,6 @@ use std::collections::HashMap;
 
 pub fn part1(input: &str) -> i32 {
     parse(input)
-        .iter()
         .filter(|g| {
             g.sets.iter().all(|s| {
                 (s.r == 0 || s.r <= 12) && (s.g == 0 || s.g <= 13) && (s.b == 0 || s.b <= 14)
@@ -14,7 +13,6 @@ pub fn part1(input: &str) -> i32 {
 
 pub fn part2(input: &str) -> i32 {
     parse(input)
-        .iter()
         .map(|game| {
             let r = game.sets.iter().map(|s| s.r).max().unwrap();
             let g = game.sets.iter().map(|s| s.g).max().unwrap();
@@ -25,8 +23,8 @@ pub fn part2(input: &str) -> i32 {
         .sum()
 }
 
-fn parse(input: &str) -> Vec<Game> {
-    input.lines().map(|l| Game::parse(l)).collect()
+fn parse(input: &str) -> impl Iterator<Item = Game> + '_ {
+    input.lines().map(|l| Game::parse(l))
 }
 
 struct Game {
