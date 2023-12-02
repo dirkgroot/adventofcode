@@ -7,12 +7,12 @@ pub fn part1(input: &str) -> i32 {
 }
 
 pub fn part2(input: &str) -> i32 {
-    parse(input).fold(0, |acc, game| {
-        let r = game.sets.iter().map(|s| s.r).max().unwrap();
-        let g = game.sets.iter().map(|s| s.g).max().unwrap();
-        let b = game.sets.iter().map(|s| s.b).max().unwrap();
+    parse(input).fold(0, |acc, g| {
+        let red = g.sets.iter().map(|s| s.r).max().unwrap();
+        let green = g.sets.iter().map(|s| s.g).max().unwrap();
+        let blue = g.sets.iter().map(|s| s.b).max().unwrap();
 
-        acc + r * g * b
+        acc + red * green * blue
     })
 }
 
@@ -29,7 +29,7 @@ impl Game {
     fn parse(input: &str) -> Self {
         let (id, sets) = input.split_once(": ").unwrap();
         let id = id[5..].parse::<i32>().unwrap();
-        let sets = sets.split("; ").map(CubeSet::parse).collect::<_>();
+        let sets = sets.split("; ").map(CubeSet::parse).collect();
 
         Self { id, sets }
     }
