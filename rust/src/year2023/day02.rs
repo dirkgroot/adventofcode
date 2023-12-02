@@ -26,10 +26,6 @@ struct Game {
 }
 
 impl Game {
-    fn new(id: i32, sets: Vec<CubeSet>) -> Self {
-        Self { id, sets }
-    }
-
     fn parse(input: &str) -> Self {
         let (id, sets) = input.split_once(": ").unwrap();
         let id = id[5..].parse::<i32>().unwrap();
@@ -38,7 +34,7 @@ impl Game {
             .map(|set_string| CubeSet::parse(set_string))
             .collect::<_>();
 
-        Game::new(id, sets)
+        Self { id, sets }
     }
 }
 
@@ -49,10 +45,6 @@ struct CubeSet {
 }
 
 impl CubeSet {
-    pub fn new(r: i32, g: i32, b: i32) -> Self {
-        Self { r, g, b }
-    }
-
     fn parse(input: &str) -> Self {
         let cubes = input
             .split(", ")
@@ -63,7 +55,11 @@ impl CubeSet {
             .collect::<HashMap<_, _>>();
         let find_color = |c| *cubes.get(c).unwrap_or(&0);
 
-        CubeSet::new(find_color("red"), find_color("green"), find_color("blue"))
+        Self {
+            r: find_color("red"),
+            g: find_color("green"),
+            b: find_color("blue"),
+        }
     }
 }
 
