@@ -44,12 +44,12 @@ impl Game {
     }
 
     fn parse(input: &str) -> Self {
-        let game = input.split(": ").collect::<Vec<&str>>();
+        let game = input.split(": ").collect::<Vec<_>>();
         let id = game[0][5..].parse::<i32>().unwrap();
         let set_strings = game[1].split("; ");
         let sets = set_strings
             .map(|set_string| CubeSet::parse(set_string))
-            .collect::<Vec<CubeSet>>();
+            .collect::<_>();
 
         Game::new(id, sets)
     }
@@ -70,7 +70,7 @@ impl CubeSet {
         let cubes = input
             .split(", ")
             .map(|cube| {
-                let colors = cube.split(" ").collect::<Vec<&str>>();
+                let colors = cube.split(" ").collect::<Vec<_>>();
                 (colors[1], colors[0].parse::<i32>().unwrap())
             })
             .collect::<HashMap<_, _>>();
