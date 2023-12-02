@@ -51,8 +51,8 @@ fn count_valid_between(input: &str, is_valid: fn(i32) -> bool) -> i32 {
 }
 
 fn parse(input: &str) -> (i32, i32) {
-    let s = input.split("-").collect::<Vec<&str>>();
-    (s[0].parse::<i32>().unwrap(), s[1].parse::<i32>().unwrap())
+    let (min, max) = input.split_once("-").unwrap();
+    (min.parse().unwrap(), max.parse().unwrap())
 }
 
 fn next_valid(i: i32, is_valid: fn(i32) -> bool) -> i32 {
