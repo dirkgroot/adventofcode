@@ -1,9 +1,7 @@
 use std::collections::HashMap;
 
 pub fn part1(input: &str) -> i32 {
-    let games = parse(input);
-
-    games
+    parse(input)
         .iter()
         .filter(|g| {
             g.sets.iter().all(|s| {
@@ -15,9 +13,7 @@ pub fn part1(input: &str) -> i32 {
 }
 
 pub fn part2(input: &str) -> i32 {
-    let games = parse(input);
-
-    games
+    parse(input)
         .iter()
         .map(|game| {
             let r = game.sets.iter().map(|s| s.r).max().unwrap();
