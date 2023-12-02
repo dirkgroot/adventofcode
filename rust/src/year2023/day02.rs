@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 pub fn part1(input: &str) -> i32 {
     let games = parse(input);
 
@@ -65,19 +67,14 @@ impl CubeSet {
     }
 
     fn parse(input: &str) -> Self {
-        let cube_strings = input.split(", ");
-        let cubes = cube_strings
-            .map(|c| {
-                let parts = c.split(" ").collect::<Vec<&str>>();
-                (parts[1], parts[0].parse::<i32>().unwrap())
+        let cubes = input
+            .split(", ")
+            .map(|cube| {
+                let colors = cube.split(" ").collect::<Vec<&str>>();
+                (colors[1], colors[0].parse::<i32>().unwrap())
             })
-            .collect::<Vec<(&str, i32)>>();
-        let find_color = |color| {
-            cubes
-                .iter()
-                .find(|(c, n)| *c == color)
-                .map_or(0, |(_, n)| *n)
-        };
+            .collect::<HashMap<_, _>>();
+        let find_color = |c| *cubes.get(c).unwrap_or(&0);
 
         CubeSet::new(find_color("red"), find_color("green"), find_color("blue"))
     }
