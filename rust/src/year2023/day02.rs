@@ -2,25 +2,18 @@ use std::collections::HashMap;
 
 pub fn part1(input: &str) -> i32 {
     parse(input)
-        .filter(|g| {
-            g.sets.iter().all(|s| {
-                (s.r == 0 || s.r <= 12) && (s.g == 0 || s.g <= 13) && (s.b == 0 || s.b <= 14)
-            })
-        })
-        .map(|g| g.id)
-        .sum()
+        .filter(|g| g.sets.iter().all(|s| s.r <= 12 && s.g <= 13 && s.b <= 14))
+        .fold(0, |acc, g| acc + g.id)
 }
 
 pub fn part2(input: &str) -> i32 {
-    parse(input)
-        .map(|game| {
-            let r = game.sets.iter().map(|s| s.r).max().unwrap();
-            let g = game.sets.iter().map(|s| s.g).max().unwrap();
-            let b = game.sets.iter().map(|s| s.b).max().unwrap();
+    parse(input).fold(0, |acc, game| {
+        let r = game.sets.iter().map(|s| s.r).max().unwrap();
+        let g = game.sets.iter().map(|s| s.g).max().unwrap();
+        let b = game.sets.iter().map(|s| s.b).max().unwrap();
 
-            r * g * b
-        })
-        .sum()
+        acc + r * g * b
+    })
 }
 
 fn parse(input: &str) -> impl Iterator<Item = Game> + '_ {
@@ -38,10 +31,10 @@ impl Game {
     }
 
     fn parse(input: &str) -> Self {
-        let game = input.split(": ").collect::<Vec<_>>();
-        let id = game[0][5..].parse::<i32>().unwrap();
-        let set_strings = game[1].split("; ");
-        let sets = set_strings
+        let (id, sets) = input.split_once(": ").unwrap();
+        let id = id[5..].parse::<i32>().unwrap();
+        let sets = sets
+            .split("; ")
             .map(|set_string| CubeSet::parse(set_string))
             .collect::<_>();
 
@@ -64,8 +57,8 @@ impl CubeSet {
         let cubes = input
             .split(", ")
             .map(|cube| {
-                let colors = cube.split(" ").collect::<Vec<_>>();
-                (colors[1], colors[0].parse::<i32>().unwrap())
+                let (cubes, color) = cube.split_once(" ").unwrap();
+                (color, cubes.parse::<i32>().unwrap())
             })
             .collect::<HashMap<_, _>>();
         let find_color = |c| *cubes.get(c).unwrap_or(&0);
