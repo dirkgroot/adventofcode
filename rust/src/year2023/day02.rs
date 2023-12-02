@@ -29,10 +29,7 @@ impl Game {
     fn parse(input: &str) -> Self {
         let (id, sets) = input.split_once(": ").unwrap();
         let id = id[5..].parse::<i32>().unwrap();
-        let sets = sets
-            .split("; ")
-            .map(|set_string| CubeSet::parse(set_string))
-            .collect::<_>();
+        let sets = sets.split("; ").map(CubeSet::parse).collect::<_>();
 
         Self { id, sets }
     }
