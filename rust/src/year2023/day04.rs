@@ -24,7 +24,7 @@ fn parse(input: &str) -> Vec<Card> {
 
 fn parse_card(input: &str) -> Card {
     let (card, rest) = input.split_once(": ").unwrap();
-    let id = card[5..].trim().parse::<i32>().unwrap();
+    let id = card[5..].trim().parse().unwrap();
     let (my_numbers, winning_numbers) = rest.trim().split_once(" | ").unwrap();
     let my_numbers = parse_number_list(my_numbers).collect::<Vec<_>>();
     let winning_numbers = parse_number_list(winning_numbers).collect::<HashSet<_>>();
@@ -33,10 +33,7 @@ fn parse_card(input: &str) -> Card {
 }
 
 fn parse_number_list(numbers: &str) -> impl Iterator<Item = i32> + '_ {
-    numbers
-        .split(" ")
-        .filter(|n| n.trim().len() > 0)
-        .map(|n| n.trim().parse::<i32>().unwrap())
+    numbers.split_whitespace().map(|n| n.parse().unwrap())
 }
 
 struct Card {
@@ -46,22 +43,18 @@ struct Card {
 
 impl Card {
     fn new(id: i32, my_numbers: Vec<i32>, winning_numbers: HashSet<i32>) -> Self {
-        let matching_numbers = my_numbers
-            .iter()
-            .filter(|n| winning_numbers.contains(*n))
-            .count();
         Self {
             id,
-            matching_numbers: matching_numbers as i32,
+            matching_numbers: my_numbers
+                .iter()
+                .filter(|n| winning_numbers.contains(*n))
+                .count() as i32,
         }
     }
 
     fn worth(&self) -> i32 {
-        if self.matching_numbers == 0 {
-            0
-        } else {
-            2i32.pow(self.matching_numbers as u32 - 1)
-        }
+        2i32.checked_pow(self.matching_numbers.saturating_sub(1) as u32)
+            .unwrap_or(0)
     }
 }
 
