@@ -13,9 +13,9 @@ pub fn part2(input: &str) -> i32 {
     })
 }
 
-fn won_cards(c: &Card, cache: &HashMap<i32, i32>) -> i32 {
-    let won_cards = (c.id + 1)..=(c.id + c.matching_numbers);
-    won_cards.fold(c.matching_numbers, |acc, id| acc + cache[&id])
+fn won_cards(card: &Card, cache: &HashMap<i32, i32>) -> i32 {
+    let won_cards = (card.id + 1)..=(card.id + card.matching_numbers);
+    won_cards.fold(card.matching_numbers, |acc, id| acc + cache[&id])
 }
 
 fn parse(input: &str) -> Vec<Card> {
@@ -32,8 +32,8 @@ fn parse_card(input: &str) -> Card {
     Card::new(id, my_numbers, winning_numbers)
 }
 
-fn parse_number_list(winning_numbers: &str) -> impl Iterator<Item = i32> + '_ {
-    winning_numbers
+fn parse_number_list(numbers: &str) -> impl Iterator<Item = i32> + '_ {
+    numbers
         .split(" ")
         .filter(|n| n.trim().len() > 0)
         .map(|n| n.trim().parse::<i32>().unwrap())
