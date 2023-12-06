@@ -27,8 +27,10 @@ fn parse_line_2(time: &str) -> i64 {
     number.replace(" ", "").parse::<i64>().unwrap()
 }
 
-fn ways_to_beat(time: i64, distance: i64) -> i64 {
-    (1..time).filter(|t| t * (time - t) > distance).count() as i64
+fn ways_to_beat(time: i64, record: i64) -> i64 {
+    let min = (1..time).take_while(|t| t * (time - t) <= record).last().unwrap();
+    let max = (1..time).rev().take_while(|t| t * (time - t) <= record).last().unwrap();
+    max - min - 1
 }
 
 #[cfg(test)]
