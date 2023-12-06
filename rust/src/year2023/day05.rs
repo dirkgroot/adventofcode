@@ -6,7 +6,7 @@ use crate::year2023::day05::Type::{
 };
 
 pub fn part1(input: &str) -> i64 {
-    let almanac = parse(input);
+    let almanac = Almanac::parse(input);
     almanac
         .seeds
         .iter()
@@ -16,7 +16,7 @@ pub fn part1(input: &str) -> i64 {
 }
 
 pub fn part2(input: &str) -> i64 {
-    let almanac = parse(input);
+    let almanac = Almanac::parse(input);
     let seed_ranges = almanac
         .seeds
         .chunks(2)
@@ -30,78 +30,66 @@ pub fn part2(input: &str) -> i64 {
         .unwrap()
 }
 
-fn parse(input: &str) -> Almanac {
-    let mut sections = input.split("\n\n");
-    let seeds = parse_seeds(sections.next().unwrap());
-    let seed_to_soil = parse_map(sections.next().unwrap(), Soil);
-    let soil_to_fertilizer = parse_map(sections.next().unwrap(), Fertilizer);
-    let fertilizer_to_water = parse_map(sections.next().unwrap(), Water);
-    let water_to_light = parse_map(sections.next().unwrap(), Light);
-    let light_to_temperature = parse_map(sections.next().unwrap(), Temperature);
-    let temperature_to_humidity = parse_map(sections.next().unwrap(), Humidity);
-    let humidity_to_location = parse_map(sections.next().unwrap(), Location);
-
-    Almanac {
-        seeds,
-        maps: HashMap::from([
-            (Seed, seed_to_soil),
-            (Soil, soil_to_fertilizer),
-            (Fertilizer, fertilizer_to_water),
-            (Water, water_to_light),
-            (Light, light_to_temperature),
-            (Temperature, temperature_to_humidity),
-            (Humidity, humidity_to_location),
-        ]),
-    }
-}
-
-fn parse_seeds(seeds: &str) -> Vec<i64> {
-    seeds
-        .split_whitespace()
-        .skip(1)
-        .map(|s| s.parse::<i64>().unwrap())
-        .collect()
-}
-
-fn parse_map(input: &str, destination: Type) -> Map {
-    let mut ranges = input
-        .lines()
-        .skip(1)
-        .map(|line| {
-            let mut split = line.split_whitespace();
-            let (dest, src, size) = (
-                split.next().unwrap().parse::<i64>().unwrap(),
-                split.next().unwrap().parse::<i64>().unwrap(),
-                split.next().unwrap().parse::<i64>().unwrap(),
-            );
-            (src..(src + size), dest..(dest + size))
-        })
-        .collect::<Vec<(Range<i64>, Range<i64>)>>();
-    ranges.sort_by(|a, b| a.0.start.cmp(&b.0.start));
-    Map {
-        destination,
-        ranges,
-    }
-}
-
-#[derive(Eq, PartialEq, Hash, Copy, Clone, Debug)]
-enum Type {
-    Seed,
-    Soil,
-    Fertilizer,
-    Water,
-    Light,
-    Temperature,
-    Humidity,
-    Location,
-}
-
 struct Almanac {
     seeds: Vec<i64>,
     maps: HashMap<Type, Map>,
 }
 
 impl Almanac {
+    fn parse(input: &str) -> Self {
+        let mut sections = input.split("\n\n");
+        let seeds = Self::parse_seeds(sections.next().unwrap());
+        let seed_to_soil = Self::parse_map(sections.next().unwrap(), Soil);
+        let soil_to_fertilizer = Self::parse_map(sections.next().unwrap(), Fertilizer);
+        let fertilizer_to_water = Self::parse_map(sections.next().unwrap(), Water);
+        let water_to_light = Self::parse_map(sections.next().unwrap(), Light);
+        let light_to_temperature = Self::parse_map(sections.next().unwrap(), Temperature);
+        let temperature_to_humidity = Self::parse_map(sections.next().unwrap(), Humidity);
+        let humidity_to_location = Self::parse_map(sections.next().unwrap(), Location);
+
+        Self {
+            seeds,
+            maps: HashMap::from([
+                (Seed, seed_to_soil),
+                (Soil, soil_to_fertilizer),
+                (Fertilizer, fertilizer_to_water),
+                (Water, water_to_light),
+                (Light, light_to_temperature),
+                (Temperature, temperature_to_humidity),
+                (Humidity, humidity_to_location),
+            ]),
+        }
+    }
+
+    fn parse_seeds(seeds: &str) -> Vec<i64> {
+        seeds
+            .split_whitespace()
+            .skip(1)
+            .map(|s| s.parse::<i64>().unwrap())
+            .collect()
+    }
+
+    fn parse_map(input: &str, destination: Type) -> Map {
+        let mut ranges = input
+            .lines()
+            .skip(1)
+            .map(|line| {
+                let mut split = line.split_whitespace();
+                let (dest, src, size) = (
+                    split.next().unwrap().parse::<i64>().unwrap(),
+                    split.next().unwrap().parse::<i64>().unwrap(),
+                    split.next().unwrap().parse::<i64>().unwrap(),
+                );
+                (src..(src + size), dest..(dest + size))
+            })
+            .collect::<Vec<(Range<i64>, Range<i64>)>>();
+        ranges.sort_by(|a, b| a.0.start.cmp(&b.0.start));
+        Map {
+            destination,
+            ranges,
+        }
+    }
+
     fn seed_location(&self, seed: i64) -> Option<i64> {
         self.find_location(&self.maps[&Seed], seed)
     }
@@ -137,6 +125,18 @@ impl Almanac {
             result
         }
     }
+}
+
+#[derive(Eq, PartialEq, Hash, Copy, Clone, Debug)]
+enum Type {
+    Seed,
+    Soil,
+    Fertilizer,
+    Water,
+    Light,
+    Temperature,
+    Humidity,
+    Location,
 }
 
 struct Map {
