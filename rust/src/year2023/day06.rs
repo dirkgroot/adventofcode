@@ -28,9 +28,11 @@ fn parse_line_2(time: &str) -> i64 {
 }
 
 fn ways_to_beat(time: i64, record: i64) -> i64 {
-    let min = (1..time).take_while(|t| t * (time - t) <= record).last().unwrap();
-    let max = (1..time).rev().take_while(|t| t * (time - t) <= record).last().unwrap();
-    max - min - 1
+    let sqrt_d = ((time * time - 4 * (record + 1)) as f64).sqrt();
+    let min = ((time as f64) - sqrt_d) / 2f64;
+    let max = ((time as f64) + sqrt_d) / 2f64;
+
+    (max.floor() - min.ceil()) as i64 + 1
 }
 
 #[cfg(test)]
