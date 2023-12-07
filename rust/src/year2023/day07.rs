@@ -73,31 +73,10 @@ fn compare_by_cards(d1: &str, d2: &str, joker: bool) -> Ordering {
 }
 
 fn card_value(card: &char, joker: bool) -> i32 {
-    match card {
-        '2' if joker => 1,
-        '2' => 0,
-        '3' if joker => 2,
-        '3' => 1,
-        '4' if joker => 3,
-        '4' => 2,
-        '5' if joker => 4,
-        '5' => 3,
-        '6' if joker => 5,
-        '6' => 4,
-        '7' if joker => 6,
-        '7' => 5,
-        '8' if joker => 7,
-        '8' => 6,
-        '9' if joker => 8,
-        '9' => 7,
-        'T' if joker => 9,
-        'T' => 8,
-        'J' if joker => 0,
-        'J' => 9,
-        'Q' => 10,
-        'K' => 11,
-        'A' => 12,
-        _ => panic!(),
+    if joker {
+        "J23456789TQKA".find(*card).unwrap() as i32
+    } else {
+        "23456789TJQKA".find(*card).unwrap() as i32
     }
 }
 
