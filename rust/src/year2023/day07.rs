@@ -38,39 +38,29 @@ fn deck_type(deck: &str, joker: bool) -> i32 {
     });
     let groups = count.len();
     let values = count.values().map(|v| *v).collect::<Vec<i32>>();
-    let has_joker = count.contains_key(&'J');
     if groups == 1 {
-        7
-    } else if joker && has_joker {
-        let jokers = count[&'J'];
-        count.remove(&'J');
+        return 7;
+    }
+    if joker && count.contains_key(&'J') {
+        let jokers = count.remove(&'J').unwrap();
         let groups = count.len();
         let values = count.values().map(|v| *v).collect::<Vec<i32>>();
-        if groups == 1 {
-            7
-        } else if groups == 2 && values.iter().any(|v| *v + jokers == 4) {
-            6
-        } else if groups == 2 && values.iter().any(|v| *v + jokers == 3) {
-            5
-        } else if groups == 3 && values.iter().any(|v| *v + jokers == 3) {
-            4
-        } else if groups == 3 && values.iter().filter(|v| **v == 2 || *v + jokers == 2).count() == 2 {
-            3
-        } else {
-            2
-        }
-    } else if groups == 2 && (values[0] == 1 || values[0] == 4) {
-        6
-    } else if groups == 2 {
-        5
-    } else if groups == 3 && (values.iter().any(|v| *v == 3)) {
-        4
-    } else if groups == 3 {
-        3
-    } else if groups == 4 {
-        2
-    } else {
-        1
+        return match groups {
+            1 => 7,
+            2 if values.iter().any(|v| *v + jokers == 4) => 6,
+            2 => 5,
+            3 if values.iter().any(|v| *v + jokers == 3) => 4,
+            3 => 3,
+            _ => 2,
+        };
+    }
+    match groups {
+        2 if values[0] == 1 || values[0] == 4 => 6,
+        2 => 5,
+        3 if values.iter().any(|v| *v == 3) => 4,
+        3 => 3,
+        4 => 2,
+        _ => 1,
     }
 }
 
