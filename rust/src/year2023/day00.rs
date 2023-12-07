@@ -1,9 +1,9 @@
 pub fn part1(input: &str) -> i32 {
-    0
+    input.parse::<i32>().unwrap()
 }
 
 pub fn part2(input: &str) -> i32 {
-    0
+    input.parse::<i32>().unwrap()
 }
 
 #[cfg(test)]
@@ -15,7 +15,7 @@ mod tests {
 
     const DAY: i32 = 0;
 
-    const EXAMPLE: &str = "";
+    const EXAMPLE: &str = "0";
 
     #[test]
     fn part1_example() {
