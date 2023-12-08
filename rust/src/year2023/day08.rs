@@ -11,16 +11,21 @@ pub fn part1(input: &str) -> usize {
 
 pub fn part2(input: &str) -> u64 {
     let (nodes, instructions) = parse(input);
-    let start_nodes = nodes
+    nodes
         .keys()
         .filter(|it| it.ends_with("A"))
-        .collect::<Vec<_>>();
-
-    start_nodes
-        .iter()
         .map(|start| path_length(*start, &nodes, &instructions, |node| node.ends_with("Z")) as u64)
         .reduce(utils::lcm)
         .unwrap()
+}
+
+fn parse(input: &str) -> (HashMap<&str, (&str, &str)>, String) {
+    let (instr, nodes) = input.split_once("\n\n").unwrap();
+    let nodes = nodes
+        .lines()
+        .map(|line| (&line[0..=2], (&line[7..=9], &line[12..=14])))
+        .collect::<HashMap<_, _>>();
+    (nodes, String::from(instr))
 }
 
 fn path_length(
@@ -42,15 +47,6 @@ fn path_length(
     })
     .count();
     path_length - 1
-}
-
-fn parse(input: &str) -> (HashMap<&str, (&str, &str)>, String) {
-    let (instr, nodes) = input.split_once("\n\n").unwrap();
-    let nodes = nodes
-        .lines()
-        .map(|line| (&line[0..=2], (&line[7..=9], &line[12..=14])))
-        .collect::<HashMap<_, _>>();
-    (nodes, String::from(instr))
 }
 
 #[cfg(test)]
