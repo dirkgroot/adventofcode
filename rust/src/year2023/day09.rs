@@ -7,27 +7,28 @@ pub fn part2(input: &str) -> i32 {
 }
 
 fn find_next(input: &str, reverse: bool) -> i32 {
-    input
-        .lines()
-        .map(|line| {
-            line.split_whitespace()
-                .map(|n| n.parse::<i32>().unwrap())
-                .collect::<Vec<_>>()
-        })
-        .map(|history| next_value(&history, reverse))
+    parse(input, reverse)
+        .map(|history| next_value(&history))
         .sum()
 }
 
-fn next_value(prev: &Vec<i32>, reverse: bool) -> i32 {
+fn parse(input: &str, reverse: bool) -> impl Iterator<Item = Vec<i32>> + '_ {
+    input.lines().map(move |line| {
+        let map = line.split_whitespace().map(|n| n.parse::<i32>().unwrap());
+        if reverse {
+            map.rev().collect()
+        } else {
+            map.collect()
+        }
+    })
+}
+
+fn next_value(prev: &Vec<i32>) -> i32 {
     if prev.iter().all(|d| *d == 0) {
         0
     } else {
-        let diffs = prev.windows(2).map(|w| w[1] - w[0]).collect::<Vec<_>>();
-        if reverse {
-            prev.first().unwrap() - next_value(&diffs, reverse)
-        } else {
-            prev.last().unwrap() + next_value(&diffs, reverse)
-        }
+        let diffs = prev.windows(2).map(|w| w[1] - w[0]).collect();
+        prev.last().unwrap() + next_value(&diffs)
     }
 }
 
