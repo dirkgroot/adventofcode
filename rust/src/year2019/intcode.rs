@@ -1,10 +1,11 @@
 use std::iter::successors;
-use std::slice::Iter;
 
 use crate::year2019::intcode::Argmode::{Immediate, Position};
 
+#[derive(Clone)]
 pub struct Intcode {
     ip: usize,
+    pub ready: bool,
     mem: Vec<i32>,
 }
 
@@ -12,6 +13,7 @@ impl Intcode {
     pub fn parse(input: &str) -> Intcode {
         Self {
             ip: 0,
+            ready: false,
             mem: input
                 .split(",")
                 .map(|i| i.parse::<i32>().unwrap())
@@ -27,13 +29,6 @@ impl Intcode {
         self.mem[index] = value;
     }
 
-    pub fn clone(&self) -> Intcode {
-        Intcode {
-            ip: self.ip,
-            mem: self.mem.clone(),
-        }
-    }
-
     pub fn exec(&mut self, input: &Vec<i32>) -> Result<Vec<i32>, String> {
         let mut output = Vec::new();
         let mut input_iter = input.iter();
@@ -42,13 +37,23 @@ impl Intcode {
             match opcode % 100 {
                 1 => self.add(opcode),
                 2 => self.multiply(opcode),
-                3 => self.input(&mut input_iter),
+                3 => {
+                    if let Some(i) = input_iter.next() {
+                        self.input(i)
+                    } else {
+                        self.ip -= 1;
+                        return Ok(output);
+                    }
+                }
                 4 => self.output(opcode, &mut output),
                 5 => self.jump_if_true(opcode),
                 6 => self.jump_if_false(opcode),
                 7 => self.less_than(opcode),
                 8 => self.equals(opcode),
-                99 => return Ok(output),
+                99 => {
+                    self.ready = true;
+                    return Ok(output);
+                }
                 _ => return Err(format!("Invalid opcode {}!", opcode)),
             }
         }
@@ -70,9 +75,9 @@ impl Intcode {
         self.mem[into] = first * second;
     }
 
-    fn input(&mut self, input: &mut Iter<i32>) {
+    fn input(&mut self, input: &i32) {
         let into = self.next(Immediate) as usize;
-        self.mem[into] = *input.next().unwrap()
+        self.mem[into] = *input
     }
 
     fn output(&mut self, opcode: i32, output: &mut Vec<i32>) {
@@ -164,9 +169,11 @@ mod tests {
 
     #[test]
     fn test_input() {
-        let mut intcode = Intcode::parse("3,0,99");
+        let mut intcode = Intcode::parse("3,5,3,5,99,0");
         intcode.exec(&vec![10]).unwrap();
-        assert_eq!(10, intcode.get(0))
+        assert_eq!(10, intcode.get(5));
+        intcode.exec(&vec![20]).unwrap();
+        assert_eq!(20, intcode.get(5));
     }
 
     #[test]
