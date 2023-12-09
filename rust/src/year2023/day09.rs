@@ -15,20 +15,17 @@ fn find_next(input: &str, reverse: bool) -> i32 {
 fn parse(input: &str, reverse: bool) -> impl Iterator<Item = Vec<i32>> + '_ {
     input.lines().map(move |line| {
         let map = line.split_whitespace().map(|n| n.parse::<i32>().unwrap());
-        if reverse {
-            map.rev().collect()
-        } else {
-            map.collect()
+        match reverse {
+            true => map.rev().collect(),
+            false => map.collect(),
         }
     })
 }
 
 fn next_value(prev: &Vec<i32>) -> i32 {
-    if prev.iter().all(|d| *d == 0) {
-        0
-    } else {
-        let diffs = prev.windows(2).map(|w| w[1] - w[0]).collect();
-        prev.last().unwrap() + next_value(&diffs)
+    match prev.iter().all(|d| *d == 0) {
+        true => 0,
+        false => prev.last().unwrap() + next_value(&prev.windows(2).map(|w| w[1] - w[0]).collect()),
     }
 }
 
