@@ -1,4 +1,3 @@
-use std::cmp::max;
 use std::iter::successors;
 
 pub fn part1(input: &str) -> usize {
@@ -10,61 +9,10 @@ pub fn part2(input: &str) -> usize {
     let map = &parse(input);
     let main_loop = main_loop(&map);
 
-    let vertices = successors(Some(main_loop.len() - 1), |i| {
-        Some((i + 1) % main_loop.len())
-    })
-    .map(|i| main_loop[i])
-    .take(main_loop.len() + 2)
-    .collect::<Vec<_>>()
-    .windows(3)
-    .filter(|points| points[0].0 != points[2].0 && points[0].1 != points[2].1)
-    .map(|points| {
-        let (above1, below1, left1, right1) = (
-            is_above(points[1], points[0]),
-            is_below(points[1], points[0]),
-            is_left(points[1], points[0]),
-            is_right(points[1], points[0]),
-        );
-        let (above2, below2, left2, right2) = (
-            is_above(points[1], points[2]),
-            is_below(points[1], points[2]),
-            is_left(points[1], points[2]),
-            is_right(points[1], points[2]),
-        );
-        if below1 && right2 {
-            (points[1], (points[1].0 + 1, points[1].1 + 1))
-        } else if below1 && left2 {
-            (
-                (points[1].0 + 1, points[1].1),
-                (points[1].0, points[1].1 + 1),
-            )
-        } else if left1 && below2 {
-            (
-                (points[1].0, points[1].1 + 1),
-                (points[1].0 + 1, points[1].1),
-            )
-        } else if left1 && above2 {
-            (points[1], (points[1].0 + 1, points[1].1 + 1))
-        } else if above1 && right2 {
-            ((points[1].0, points[1].1 + 1), (points[1].0 + 1, points[1].1))
-        } else if above1 && left2 {
-            ((points[1].0 + 1, points[1].1 + 1), points[1])
-        } else if right1 && below2 {
-            ((points[1].0 + 1, points[1].1 + 1), points[1])
-        } else if right1 && above2 {
-            ((points[1].0 + 1, points[1].1), (points[1].0, points[1].1 + 1))
-        } else {
-            panic!()
-        }
-    })
-    .collect::<Vec<_>>();
-    let v1 = vertices.iter().map(|(a, _)| *a).collect::<Vec<_>>();
-    let v2 = vertices.iter().map(|(_, b)| *b).collect::<Vec<_>>();
-
-    max(shoelace(&v1), shoelace(&v2)) - main_loop.len()
+    area(&main_loop) - (main_loop.len() / 2) + 1
 }
 
-fn shoelace(vertices: &Vec<(usize, usize)>) -> usize {
+fn area(vertices: &Vec<(usize, usize)>) -> usize {
     let mut area = 0i32;
     let mut j = vertices.len() - 1;
     (0usize..vertices.len()).for_each(|i| {
@@ -73,22 +21,6 @@ fn shoelace(vertices: &Vec<(usize, usize)>) -> usize {
         j = i;
     });
     (area / 2).abs() as usize
-}
-
-fn is_above((oy, ox): (usize, usize), (py, px): (usize, usize)) -> bool {
-    py < oy && px == ox
-}
-
-fn is_below((oy, ox): (usize, usize), (py, px): (usize, usize)) -> bool {
-    py > oy && px == ox
-}
-
-fn is_left((oy, ox): (usize, usize), (py, px): (usize, usize)) -> bool {
-    py == oy && px < ox
-}
-
-fn is_right((oy, ox): (usize, usize), (py, px): (usize, usize)) -> bool {
-    py == oy && px > ox
 }
 
 fn parse(input: &str) -> Vec<&str> {
