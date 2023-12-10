@@ -10,12 +10,11 @@ pub fn part2(input: &str) -> usize {
     area(&main_loop) - (main_loop.len() / 2) + 1
 }
 
-fn area(vertices: &Vec<(usize, usize)>) -> usize {
+fn area(path: &Vec<(usize, usize)>) -> usize {
     let mut area = 0i32;
-    let mut j = vertices.len() - 1;
-    (0usize..vertices.len()).for_each(|i| {
-        area += (vertices[j].1 as i32 + vertices[i].1 as i32)
-            * (vertices[j].0 as i32 - vertices[i].0 as i32);
+    let mut j = path.len() - 1;
+    (0usize..path.len()).for_each(|i| {
+        area += (path[j].1 as i32 + path[i].1 as i32) * (path[j].0 as i32 - path[i].0 as i32);
         j = i;
     });
     (area / 2).abs() as usize
