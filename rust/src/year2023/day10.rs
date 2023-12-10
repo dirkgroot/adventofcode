@@ -18,7 +18,7 @@ fn parse(input: &str) -> Vec<Vec<char>> {
 fn main_loop(map: &Vec<Vec<char>>) -> Vec<(usize, usize)> {
     let start_y = map.iter().position(|row| row.contains(&'S')).unwrap();
     let start_x = map[start_y].iter().position(|c| *c == 'S').unwrap();
-    let direction: Direction = start_direction(map, start_y, start_x);
+    let direction = start_direction(map, start_y, start_x);
 
     successors(Some((start_y, start_x, direction)), |(y, x, direction)| {
         let (new_y, new_x) = match direction {
