@@ -1,13 +1,11 @@
 use std::iter::successors;
 
 pub fn part1(input: &str) -> usize {
-    let main_loop = main_loop(&parse(input));
-    main_loop.len() / 2
+    main_loop(&parse(input)).len() / 2
 }
 
 pub fn part2(input: &str) -> usize {
-    let map = &parse(input);
-    let main_loop = main_loop(&map);
+    let main_loop = main_loop(&(&parse(input)));
 
     area(&main_loop) - (main_loop.len() / 2) + 1
 }
