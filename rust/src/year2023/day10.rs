@@ -5,6 +5,8 @@ pub fn part1(input: &str) -> usize {
     main_loop(&parse(input)).len() / 2
 }
 
+/// Calculate the number of inner cells using Pick's theorem.
+/// See https://en.wikipedia.org/wiki/Pick%27s_theorem.
 pub fn part2(input: &str) -> usize {
     let main_loop = main_loop(&parse(input));
 
@@ -62,6 +64,8 @@ fn start_direction(map: &Vec<Vec<char>>, y: usize, x: usize) -> Direction {
     }
 }
 
+/// Calculate the area of a polygon using the Shoelace formula.
+/// See https://en.wikipedia.org/wiki/Shoelace_formula.
 fn area(path: &Vec<(usize, usize)>) -> usize {
     let mut area = 0i32;
     let mut j = path.len() - 1;
