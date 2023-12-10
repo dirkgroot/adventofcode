@@ -71,3 +71,10 @@ pub fn permutations(v: &Vec<i32>) -> Vec<Vec<i32>> {
 
     result
 }
+
+pub enum Direction {
+    N,
+    E,
+    S,
+    W,
+}

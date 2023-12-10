@@ -1,3 +1,4 @@
+use crate::utils::Direction;
 use std::iter::successors;
 
 pub fn part1(input: &str) -> usize {
@@ -17,84 +18,48 @@ fn parse(input: &str) -> Vec<Vec<char>> {
 fn main_loop(map: &Vec<Vec<char>>) -> Vec<(usize, usize)> {
     let start_y = map.iter().position(|row| row.contains(&'S')).unwrap();
     let start_x = map[start_y].iter().position(|c| *c == 'S').unwrap();
+    let direction: Direction = start_direction(map, start_y, start_x);
 
-    successors(Some(((0, 0), (start_y, start_x))), |((py, px), (y, x))| {
-        let neighbors = neighbors(*y, *x, map.len(), map[0].len());
-        let (new_y, new_x) = neighbors
-            .iter()
-            .find(|(ny, nx)| (ny != py || nx != px) && connected(*y, *x, *ny, *nx, map))
-            .unwrap();
-        if *new_y != start_y || *new_x != start_x {
-            Some(((*y, *x), (*new_y, *new_x)))
-        } else {
-            None
-        }
+    successors(Some((start_y, start_x, direction)), |(y, x, direction)| {
+        let (new_y, new_x) = match direction {
+            Direction::N => (y - 1, *x),
+            Direction::E => (*y, x + 1),
+            Direction::S => (y + 1, *x),
+            Direction::W => (*y, x - 1),
+        };
+        let dir = match (direction, map[new_y][new_x]) {
+            (Direction::N, '7') => Direction::W,
+            (Direction::N, '|') => Direction::N,
+            (Direction::N, 'F') => Direction::E,
+            (Direction::E, '-') => Direction::E,
+            (Direction::E, 'J') => Direction::N,
+            (Direction::E, '7') => Direction::S,
+            (Direction::S, '|') => Direction::S,
+            (Direction::S, 'L') => Direction::E,
+            (Direction::S, 'J') => Direction::W,
+            (Direction::W, '-') => Direction::W,
+            (Direction::W, 'F') => Direction::S,
+            (Direction::W, 'L') => Direction::N,
+            _ => return None,
+        };
+        Some((new_y, new_x, dir))
     })
-    .map(|(_, cur)| cur)
+    .map(|(y, x, _)| (y, x))
     .collect()
 }
 
-fn neighbors(y: usize, x: usize, height: usize, width: usize) -> Vec<(usize, usize)> {
-    let mut result = Vec::new();
-    if y > 0 {
-        result.push((y - 1, x));
+fn start_direction(map: &Vec<Vec<char>>, y: usize, x: usize) -> Direction {
+    if y > 0 && vec!['|', '7', 'F'].contains(&map[y - 1][x]) {
+        Direction::N
+    } else if x < (map[0].len() - 1) && vec!['-', '7', 'J'].contains(&map[y][x + 1]) {
+        Direction::E
+    } else if y < (map.len() - 1) && vec!['|', 'J', 'L'].contains(&map[y + 1][x]) {
+        Direction::S
+    } else if x > 0 && vec!['-', 'L', 'F'].contains(&map[y][x - 1]) {
+        Direction::W
+    } else {
+        panic!()
     }
-    if x < (width - 1) {
-        result.push((y, x + 1));
-    }
-    if y < (height - 1) {
-        result.push((y + 1, x));
-    }
-    if x > 0 {
-        result.push((y, x - 1));
-    }
-    result
-}
-
-fn connected(y1: usize, x1: usize, y2: usize, x2: usize, map: &Vec<Vec<char>>) -> bool {
-    let c1 = &map[y1][x1];
-    let c2 = &map[y2][x2];
-    let result = match c1 {
-        'S' => match y2 {
-            _ if y2 > y1 => vec!['|', 'L', 'J'].contains(c2),
-            _ if y2 < y1 => vec!['|', '7', 'F'].contains(c2),
-            _ if x2 > x1 => vec!['-', 'J', '7'].contains(c2),
-            _ if x2 < x1 => vec!['-', 'L', 'F'].contains(c2),
-            _ => false,
-        },
-        '|' => match y2 {
-            _ if y2 > y1 => vec!['|', 'L', 'J', 'S'].contains(c2),
-            _ if y2 < y1 => vec!['|', '7', 'F', 'S'].contains(c2),
-            _ => false,
-        },
-        '-' => match y2 {
-            _ if x2 > x1 => vec!['-', 'J', '7', 'S'].contains(c2),
-            _ if x2 < x1 => vec!['-', 'L', 'F', 'S'].contains(c2),
-            _ => false,
-        },
-        'L' => match y2 {
-            _ if y2 < y1 => vec!['|', '7', 'F', 'S'].contains(c2),
-            _ if x2 > x1 => vec!['-', 'J', '7', 'S'].contains(c2),
-            _ => false,
-        },
-        'J' => match y2 {
-            _ if y2 < y1 => vec!['|', '7', 'F', 'S'].contains(c2),
-            _ if x2 < x1 => vec!['-', 'L', 'F', 'S'].contains(c2),
-            _ => false,
-        },
-        '7' => match y2 {
-            _ if y2 > y1 => vec!['|', 'L', 'J', 'S'].contains(c2),
-            _ if x2 < x1 => vec!['-', 'L', 'F', 'S'].contains(c2),
-            _ => false,
-        },
-        'F' => match y2 {
-            _ if y2 > y1 => vec!['|', 'L', 'J', 'S'].contains(c2),
-            _ if x2 > x1 => vec!['-', 'J', '7', 'S'].contains(c2),
-            _ => false,
-        },
-        _ => false,
-    };
-    result
 }
 
 fn area(path: &Vec<(usize, usize)>) -> usize {
