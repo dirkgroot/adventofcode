@@ -21,18 +21,14 @@ fn area(vertices: &Vec<(usize, usize)>) -> usize {
     (area / 2).abs() as usize
 }
 
-fn parse(input: &str) -> Vec<&str> {
-    input.lines().collect::<Vec<_>>()
+fn parse(input: &str) -> Vec<Vec<char>> {
+    input.lines().map(|line| line.chars().collect()).collect()
 }
 
-fn main_loop(map: &Vec<&str>) -> Vec<(usize, usize)> {
-    let (start_y, start_x) = map
-        .iter()
-        .enumerate()
-        .map(|(y, line)| (y, line.find("S")))
-        .filter_map(|(y, x)| x.map(|x| (y, x)))
-        .next()
-        .unwrap();
+fn main_loop(map: &Vec<Vec<char>>) -> Vec<(usize, usize)> {
+    let start_y = map.iter().position(|row| row.contains(&'S')).unwrap();
+    let start_x = map[start_y].iter().position(|c| *c == 'S').unwrap();
+
     successors(Some(((0, 0), (start_y, start_x))), |((py, px), (y, x))| {
         let neighbors = neighbors(*y, *x, map.len(), map[0].len());
         let (new_y, new_x) = neighbors
@@ -66,45 +62,45 @@ fn neighbors(y: usize, x: usize, height: usize, width: usize) -> Vec<(usize, usi
     result
 }
 
-fn connected(y1: usize, x1: usize, y2: usize, x2: usize, map: &Vec<&str>) -> bool {
-    let c1 = &map[y1][x1..=x1];
-    let c2 = &map[y2][x2..=x2];
+fn connected(y1: usize, x1: usize, y2: usize, x2: usize, map: &Vec<Vec<char>>) -> bool {
+    let c1 = &map[y1][x1];
+    let c2 = &map[y2][x2];
     let result = match c1 {
-        "S" => match y2 {
-            _ if y2 > y1 => "|LJ".contains(c2),
-            _ if y2 < y1 => "|7F".contains(c2),
-            _ if x2 > x1 => "-J7".contains(c2),
-            _ if x2 < x1 => "-LF".contains(c2),
+        'S' => match y2 {
+            _ if y2 > y1 => vec!['|', 'L', 'J'].contains(c2),
+            _ if y2 < y1 => vec!['|', '7', 'F'].contains(c2),
+            _ if x2 > x1 => vec!['-', 'J', '7'].contains(c2),
+            _ if x2 < x1 => vec!['-', 'L', 'F'].contains(c2),
             _ => false,
         },
-        "|" => match y2 {
-            _ if y2 > y1 => "|LJS".contains(c2),
-            _ if y2 < y1 => "|7FS".contains(c2),
+        '|' => match y2 {
+            _ if y2 > y1 => vec!['|', 'L', 'J', 'S'].contains(c2),
+            _ if y2 < y1 => vec!['|', '7', 'F', 'S'].contains(c2),
             _ => false,
         },
-        "-" => match y2 {
-            _ if x2 > x1 => "-J7S".contains(c2),
-            _ if x2 < x1 => "-LFS".contains(c2),
+        '-' => match y2 {
+            _ if x2 > x1 => vec!['-', 'J', '7', 'S'].contains(c2),
+            _ if x2 < x1 => vec!['-', 'L', 'F', 'S'].contains(c2),
             _ => false,
         },
-        "L" => match y2 {
-            _ if y2 < y1 => "|7FS".contains(c2),
-            _ if x2 > x1 => "-J7S".contains(c2),
+        'L' => match y2 {
+            _ if y2 < y1 => vec!['|', '7', 'F', 'S'].contains(c2),
+            _ if x2 > x1 => vec!['-', 'J', '7', 'S'].contains(c2),
             _ => false,
         },
-        "J" => match y2 {
-            _ if y2 < y1 => "|7FS".contains(c2),
-            _ if x2 < x1 => "-LFS".contains(c2),
+        'J' => match y2 {
+            _ if y2 < y1 => vec!['|', '7', 'F', 'S'].contains(c2),
+            _ if x2 < x1 => vec!['-', 'L', 'F', 'S'].contains(c2),
             _ => false,
         },
-        "7" => match y2 {
-            _ if y2 > y1 => "|LJS".contains(c2),
-            _ if x2 < x1 => "-LFS".contains(c2),
+        '7' => match y2 {
+            _ if y2 > y1 => vec!['|', 'L', 'J', 'S'].contains(c2),
+            _ if x2 < x1 => vec!['-', 'L', 'F', 'S'].contains(c2),
             _ => false,
         },
-        "F" => match y2 {
-            _ if y2 > y1 => "|LJS".contains(c2),
-            _ if x2 > x1 => "-J7S".contains(c2),
+        'F' => match y2 {
+            _ if y2 > y1 => vec!['|', 'L', 'J', 'S'].contains(c2),
+            _ if x2 > x1 => vec!['-', 'J', '7', 'S'].contains(c2),
             _ => false,
         },
         _ => false,
