@@ -5,19 +5,9 @@ pub fn part1(input: &str) -> usize {
 }
 
 pub fn part2(input: &str) -> usize {
-    let main_loop = main_loop(&(&parse(input)));
+    let main_loop = main_loop(&parse(input));
 
     area(&main_loop) - (main_loop.len() / 2) + 1
-}
-
-fn area(path: &Vec<(usize, usize)>) -> usize {
-    let mut area = 0i32;
-    let mut j = path.len() - 1;
-    (0usize..path.len()).for_each(|i| {
-        area += (path[j].1 as i32 + path[i].1 as i32) * (path[j].0 as i32 - path[i].0 as i32);
-        j = i;
-    });
-    (area / 2).abs() as usize
 }
 
 fn parse(input: &str) -> Vec<Vec<char>> {
@@ -105,6 +95,16 @@ fn connected(y1: usize, x1: usize, y2: usize, x2: usize, map: &Vec<Vec<char>>) -
         _ => false,
     };
     result
+}
+
+fn area(path: &Vec<(usize, usize)>) -> usize {
+    let mut area = 0i32;
+    let mut j = path.len() - 1;
+    (0usize..path.len()).for_each(|i| {
+        area += (path[j].1 as i32 + path[i].1 as i32) * (path[j].0 as i32 - path[i].0 as i32);
+        j = i;
+    });
+    (area / 2).abs() as usize
 }
 
 #[cfg(test)]
