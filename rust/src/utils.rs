@@ -46,10 +46,18 @@ pub fn gcd(a: u64, b: u64) -> u64 {
 /// assert_eq!(vec![0, 1], p[0]);
 /// assert_eq!(vec![1, 0], p[1]);
 /// ```
-pub fn permutations(v: &Vec<i32>) -> Vec<Vec<i32>> {
+pub fn permutations<T>(v: &Vec<T>) -> Vec<Vec<T>>
+where
+    T: Clone,
+    T: Copy,
+{
     let mut work = v.clone();
     let mut result = Vec::new();
-    fn gen(k: usize, work: &mut Vec<i32>, result: &mut Vec<Vec<i32>>) {
+    fn gen<T>(k: usize, work: &mut Vec<T>, result: &mut Vec<Vec<T>>)
+    where
+        T: Clone,
+        T: Copy,
+    {
         if k == 1 {
             result.push(work.clone());
         } else {
@@ -67,7 +75,7 @@ pub fn permutations(v: &Vec<i32>) -> Vec<Vec<i32>> {
             }
         }
     }
-    gen(v.len(), &mut work, &mut result);
+    gen::<T>(v.len(), &mut work, &mut result);
 
     result
 }

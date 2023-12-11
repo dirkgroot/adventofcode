@@ -1,6 +1,6 @@
 use crate::year2019::intcode::Intcode;
 
-pub fn part1(input: &str) -> i32 {
+pub fn part1(input: &str) -> i64 {
     *Intcode::parse(input)
         .exec(&vec![1])
         .unwrap()
@@ -8,7 +8,7 @@ pub fn part1(input: &str) -> i32 {
         .unwrap()
 }
 
-pub fn part2(input: &str) -> i32 {
+pub fn part2(input: &str) -> i64 {
     Intcode::parse(input).exec(&vec![5]).unwrap()[0]
 }
 

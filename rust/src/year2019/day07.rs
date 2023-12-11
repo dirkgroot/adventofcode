@@ -1,15 +1,15 @@
 use crate::utils;
 use crate::year2019::intcode::Intcode;
 
-pub fn part1(input: &str) -> i32 {
+pub fn part1(input: &str) -> i64 {
     max_thruster_signal(&Intcode::parse(input), &vec![0, 1, 2, 3, 4])
 }
 
-pub fn part2(input: &str) -> i32 {
+pub fn part2(input: &str) -> i64 {
     max_thruster_signal(&Intcode::parse(input), &vec![5, 6, 7, 8, 9])
 }
 
-fn max_thruster_signal(program: &Intcode, settings: &Vec<i32>) -> i32 {
+fn max_thruster_signal(program: &Intcode, settings: &Vec<i64>) -> i64 {
     utils::permutations(settings)
         .iter()
         .map(|settings| {
@@ -20,7 +20,7 @@ fn max_thruster_signal(program: &Intcode, settings: &Vec<i32>) -> i32 {
         .unwrap()
 }
 
-fn thruster_signal(programs: &mut Vec<Intcode>, settings: &Vec<i32>) -> i32 {
+fn thruster_signal(programs: &mut Vec<Intcode>, settings: &Vec<i64>) -> i64 {
     let mut output = 0;
     let mut first = true;
     while !programs[0].ready {

@@ -6,7 +6,7 @@ use crate::year2019::intcode::Argmode::{Immediate, Position};
 pub struct Intcode {
     ip: usize,
     pub ready: bool,
-    mem: Vec<i32>,
+    mem: Vec<i64>,
 }
 
 impl Intcode {
@@ -16,20 +16,20 @@ impl Intcode {
             ready: false,
             mem: input
                 .split(",")
-                .map(|i| i.parse::<i32>().unwrap())
-                .collect::<Vec<i32>>(),
+                .map(|i| i.parse::<i64>().unwrap())
+                .collect::<Vec<i64>>(),
         }
     }
 
-    pub fn get(&self, index: usize) -> i32 {
+    pub fn get(&self, index: usize) -> i64 {
         self.mem[index]
     }
 
-    pub fn set(&mut self, index: usize, value: i32) {
+    pub fn set(&mut self, index: usize, value: i64) {
         self.mem[index] = value;
     }
 
-    pub fn exec(&mut self, input: &Vec<i32>) -> Result<Vec<i32>, String> {
+    pub fn exec(&mut self, input: &Vec<i64>) -> Result<Vec<i64>, String> {
         let mut output = Vec::new();
         let mut input_iter = input.iter();
         loop {
@@ -59,7 +59,7 @@ impl Intcode {
         }
     }
 
-    fn add(&mut self, opcode: i32) {
+    fn add(&mut self, opcode: i64) {
         let mut modes = Self::get_modes(opcode);
         let first = self.next(modes.next().unwrap());
         let second = self.next(modes.next().unwrap());
@@ -67,7 +67,7 @@ impl Intcode {
         self.mem[into] = first + second;
     }
 
-    fn multiply(&mut self, opcode: i32) {
+    fn multiply(&mut self, opcode: i64) {
         let mut modes = Self::get_modes(opcode);
         let first = self.next(modes.next().unwrap());
         let second = self.next(modes.next().unwrap());
@@ -75,18 +75,18 @@ impl Intcode {
         self.mem[into] = first * second;
     }
 
-    fn input(&mut self, input: &i32) {
+    fn input(&mut self, input: &i64) {
         let into = self.next(Immediate) as usize;
         self.mem[into] = *input
     }
 
-    fn output(&mut self, opcode: i32, output: &mut Vec<i32>) {
+    fn output(&mut self, opcode: i64, output: &mut Vec<i64>) {
         let mut modes = Self::get_modes(opcode);
         let first = self.next(modes.next().unwrap());
         output.push(first);
     }
 
-    fn jump_if_true(&mut self, opcode: i32) {
+    fn jump_if_true(&mut self, opcode: i64) {
         let mut modes = Self::get_modes(opcode);
         let first = self.next(modes.next().unwrap());
         let jump_to = self.next(modes.next().unwrap());
@@ -95,7 +95,7 @@ impl Intcode {
         }
     }
 
-    fn jump_if_false(&mut self, opcode: i32) {
+    fn jump_if_false(&mut self, opcode: i64) {
         let mut modes = Self::get_modes(opcode);
         let first = self.next(modes.next().unwrap());
         let jump_to = self.next(modes.next().unwrap());
@@ -104,7 +104,7 @@ impl Intcode {
         }
     }
 
-    fn less_than(&mut self, opcode: i32) {
+    fn less_than(&mut self, opcode: i64) {
         let mut modes = Self::get_modes(opcode);
         let first = self.next(modes.next().unwrap());
         let second = self.next(modes.next().unwrap());
@@ -112,7 +112,7 @@ impl Intcode {
         self.mem[into] = if first < second { 1 } else { 0 }
     }
 
-    fn equals(&mut self, opcode: i32) {
+    fn equals(&mut self, opcode: i64) {
         let mut modes = Self::get_modes(opcode);
         let first = self.next(modes.next().unwrap());
         let second = self.next(modes.next().unwrap());
@@ -120,7 +120,7 @@ impl Intcode {
         self.mem[into] = if first == second { 1 } else { 0 }
     }
 
-    fn next(&mut self, mode: Argmode) -> i32 {
+    fn next(&mut self, mode: Argmode) -> i64 {
         let val_or_address = self.mem[self.ip];
         self.ip += 1;
         match mode {
@@ -128,7 +128,7 @@ impl Intcode {
             Immediate => val_or_address,
         }
     }
-    fn get_modes(opcode: i32) -> impl Iterator<Item = Argmode> {
+    fn get_modes(opcode: i64) -> impl Iterator<Item = Argmode> {
         successors(Some(opcode / 100), |m| Some(m / 10)).map(|i| match i % 10 {
             0 => Position,
             1 => Immediate,

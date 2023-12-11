@@ -2,7 +2,7 @@ use std::iter;
 
 use crate::year2019::intcode::Intcode;
 
-pub fn part1(input: &str) -> i32 {
+pub fn part1(input: &str) -> i64 {
     let mut program = Intcode::parse(input);
 
     program.set(1, 12);
@@ -14,7 +14,7 @@ pub fn part1(input: &str) -> i32 {
     }
 }
 
-pub fn part2(input: &str) -> i32 {
+pub fn part2(input: &str) -> i64 {
     let program = Intcode::parse(input);
 
     let candidates = iter::successors(Some((0, 0)), move |prev| match prev {
