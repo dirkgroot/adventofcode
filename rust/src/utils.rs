@@ -78,3 +78,17 @@ pub enum Direction {
     S,
     W,
 }
+
+/// Parses a 2-dimensional map, represented as lines of text. Each line represents a row, every
+/// character represents a cell.
+///
+/// # Examples
+///
+/// ```
+/// use adventofcode_rust::utils::parse_map;
+///
+/// assert_eq!(vec!(vec!('a', 'b'), vec!('c', 'd')), parse_map("ab\ncd"));
+/// ```
+pub fn parse_map(input: &str) -> Vec<Vec<char>> {
+    input.lines().map(|line| line.chars().collect()).collect()
+}

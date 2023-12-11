@@ -1,20 +1,16 @@
-use crate::utils::Direction;
+use crate::utils::{parse_map, Direction};
 use std::iter::successors;
 
 pub fn part1(input: &str) -> usize {
-    main_loop(&parse(input)).len() / 2
+    main_loop(&parse_map(input)).len() / 2
 }
 
 /// Calculate the number of inner cells using Pick's theorem.
 /// See https://en.wikipedia.org/wiki/Pick%27s_theorem.
 pub fn part2(input: &str) -> usize {
-    let main_loop = main_loop(&parse(input));
+    let main_loop = main_loop(&parse_map(input));
 
     area(&main_loop) - (main_loop.len() / 2) + 1
-}
-
-fn parse(input: &str) -> Vec<Vec<char>> {
-    input.lines().map(|line| line.chars().collect()).collect()
 }
 
 fn main_loop(map: &Vec<Vec<char>>) -> Vec<(usize, usize)> {
