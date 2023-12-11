@@ -1,10 +1,11 @@
 use std::iter::successors;
 
-use crate::year2019::intcode::Argmode::{Immediate, Position};
+use crate::year2019::intcode::Argmode::{Immediate, Position, Relative};
 
 #[derive(Clone)]
 pub struct Intcode {
     ip: usize,
+    relative_base: usize,
     pub ready: bool,
     mem: Vec<i64>,
 }
@@ -13,6 +14,7 @@ impl Intcode {
     pub fn parse(input: &str) -> Intcode {
         Self {
             ip: 0,
+            relative_base: 0,
             ready: false,
             mem: input
                 .split(",")
@@ -50,6 +52,7 @@ impl Intcode {
                 6 => self.jump_if_false(opcode),
                 7 => self.less_than(opcode),
                 8 => self.equals(opcode),
+                9 => self.set_relative_base(),
                 99 => {
                     self.ready = true;
                     return Ok(output);
@@ -120,18 +123,25 @@ impl Intcode {
         self.mem[into] = if first == second { 1 } else { 0 }
     }
 
+    fn set_relative_base(&mut self) {
+        let first = self.next(Immediate) as usize;
+        self.relative_base = first;
+    }
+
     fn next(&mut self, mode: Argmode) -> i64 {
         let val_or_address = self.mem[self.ip];
         self.ip += 1;
         match mode {
             Position => self.mem[val_or_address as usize],
             Immediate => val_or_address,
+            Relative => self.mem[self.relative_base + val_or_address as usize],
         }
     }
     fn get_modes(opcode: i64) -> impl Iterator<Item = Argmode> {
         successors(Some(opcode / 100), |m| Some(m / 10)).map(|i| match i % 10 {
             0 => Position,
             1 => Immediate,
+            2 => Relative,
             _ => panic!(),
         })
     }
@@ -140,6 +150,7 @@ impl Intcode {
 enum Argmode {
     Position,
     Immediate,
+    Relative,
 }
 
 #[cfg(test)]
@@ -165,6 +176,20 @@ mod tests {
         let mut intcode = Intcode::parse("1102,5,6,0,99");
         intcode.exec(&vec![]).unwrap();
         assert_eq!(30, intcode.get(0))
+    }
+
+    #[test]
+    fn test_relative_args() {
+        let mut intcode = Intcode::parse("204,3,99,1337");
+        let output = intcode.exec(&vec![]).unwrap()[0];
+        assert_eq!(1337, output);
+    }
+
+    #[test]
+    fn test_set_relative_base() {
+        let mut intcode = Intcode::parse("9,2,204,3,99,1337");
+        let output = intcode.exec(&vec![]).unwrap()[0];
+        assert_eq!(1337, output);
     }
 
     #[test]
