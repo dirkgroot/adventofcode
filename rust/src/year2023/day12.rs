@@ -51,6 +51,7 @@ impl Record {
         let max_pos = self.springs.len() - group_len;
 
         let positions = (pos..=max_pos)
+            .skip_while(|pos2| self.springs[*pos2] == '.')
             .take_while(|pos2| pos2.checked_sub(1).map(|i| self.springs[i]) != Some('#'))
             .filter(|pos2| {
                 let rdelimiter = self.springs.get(pos2 + group_len);
