@@ -122,16 +122,16 @@ impl Trace {
     }
 
     fn mark(&mut self, dir: Direction) -> bool {
-        let update = match dir {
+        let visited = match dir {
             Direction::N => &mut self.n,
             Direction::E => &mut self.e,
             Direction::S => &mut self.s,
             Direction::W => &mut self.w,
         };
-        if *update {
+        if *visited {
             return true;
         }
-        *update = true;
+        *visited = true;
         false
     }
 }
