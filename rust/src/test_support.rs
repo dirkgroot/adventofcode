@@ -1,4 +1,4 @@
-use std::fmt::Display;
+use std::fmt::Debug;
 use std::fs;
 use std::time::Instant;
 
@@ -10,13 +10,13 @@ pub fn read_input(year: i32, day: i32) -> String {
 
 pub(crate) fn do_part<T>(p: fn(&str) -> T, input: &str) -> T
 where
-    T: Display,
+    T: Debug,
 {
     let now = Instant::now();
     let result = p(input);
     let elapsed = now.elapsed();
 
-    println!("Solution: {result}");
+    println!("Solution: {:?}", result);
     println!("Time    : {:.2?}", elapsed);
     println!("---");
 

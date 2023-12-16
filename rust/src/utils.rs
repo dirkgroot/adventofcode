@@ -80,6 +80,7 @@ where
     result
 }
 
+#[derive(Clone, Copy)]
 pub enum Direction {
     N,
     E,
