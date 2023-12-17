@@ -77,89 +77,26 @@ impl State {
     }
 
     fn neighbors(&self, map: &Vec<Vec<u32>>, ultra: bool) -> Vec<State> {
-        if ultra {
-            self.neighbors_ultra(map)
-        } else {
-            self.neighbors_normal(map)
-        }
+        let (min_straight, max_straight) = if ultra { (4, 10) } else { (0, 3) };
+
+        [Direction::N, Direction::E, Direction::S, Direction::W]
+            .iter()
+            .filter_map(|dir| self.next(map, *dir, min_straight, max_straight))
+            .collect::<Vec<_>>()
     }
 
-    fn neighbors_ultra(&self, map: &Vec<Vec<u32>>) -> Vec<State> {
-        let mut result = Vec::new();
-        if let Some(s) = self.next_ultra(map, Direction::N) {
-            result.push(s);
-        }
-        if let Some(s) = self.next_ultra(map, Direction::E) {
-            result.push(s);
-        }
-        if let Some(s) = self.next_ultra(map, Direction::S) {
-            result.push(s);
-        }
-        if let Some(s) = self.next_ultra(map, Direction::W) {
-            result.push(s);
-        }
-        result
-    }
-
-    fn next_ultra(&self, map: &Vec<Vec<u32>>, dir: Direction) -> Option<Self> {
+    fn next(
+        &self,
+        map: &Vec<Vec<u32>>,
+        dir: Direction,
+        min_straight: usize,
+        max_straight: usize,
+    ) -> Option<Self> {
         let new_steps = if dir == self.dir { self.steps + 1 } else { 1 };
-        let may_turn = self.steps == 0 || self.steps >= 4;
+        let may_turn = self.steps == 0 || self.steps >= min_straight;
         match dir {
-            _ if new_steps > 10 => None,
+            _ if new_steps > max_straight => None,
             _ if dir != self.dir && !may_turn => None,
-            Direction::N if self.dir != Direction::S => Some(Self {
-                dir,
-                y: self.y.checked_sub(1)?,
-                steps: new_steps,
-                cost: self.cost + map[self.y - 1][self.x],
-                ..*self
-            }),
-            Direction::E if self.dir != Direction::W && self.x < map[0].len() - 1 => Some(Self {
-                dir,
-                x: self.x + 1,
-                steps: new_steps,
-                cost: self.cost + map[self.y][self.x + 1],
-                ..*self
-            }),
-            Direction::S if self.dir != Direction::N && self.y < map.len() - 1 => Some(Self {
-                dir,
-                y: self.y + 1,
-                steps: new_steps,
-                cost: self.cost + map[self.y + 1][self.x],
-                ..*self
-            }),
-            Direction::W if self.dir != Direction::E => Some(Self {
-                dir,
-                x: self.x.checked_sub(1)?,
-                steps: new_steps,
-                cost: self.cost + map[self.y][self.x - 1],
-                ..*self
-            }),
-            _ => None,
-        }
-    }
-
-    fn neighbors_normal(&self, map: &Vec<Vec<u32>>) -> Vec<State> {
-        let mut result = Vec::new();
-        if let Some(s) = self.next_normal(map, Direction::N) {
-            result.push(s);
-        }
-        if let Some(s) = self.next_normal(map, Direction::E) {
-            result.push(s);
-        }
-        if let Some(s) = self.next_normal(map, Direction::S) {
-            result.push(s);
-        }
-        if let Some(s) = self.next_normal(map, Direction::W) {
-            result.push(s);
-        }
-        result
-    }
-
-    fn next_normal(&self, map: &Vec<Vec<u32>>, dir: Direction) -> Option<Self> {
-        let new_steps = if dir == self.dir { self.steps + 1 } else { 1 };
-        match dir {
-            _ if new_steps > 3 => None,
             Direction::N if self.dir != Direction::S => Some(Self {
                 dir,
                 y: self.y.checked_sub(1)?,
