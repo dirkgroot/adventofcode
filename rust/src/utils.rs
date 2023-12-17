@@ -80,7 +80,7 @@ where
     result
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum Direction {
     N,
     E,
