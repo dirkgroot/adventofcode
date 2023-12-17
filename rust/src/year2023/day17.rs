@@ -4,12 +4,12 @@ use std::collections::{BinaryHeap, HashMap};
 
 pub fn part1(input: &str) -> u32 {
     let map = parse(input);
-    min_heat_loss(&map, 0, 0, map.len() - 1, map[0].len() - 1, false)
+    min_heat_loss(&map, false)
 }
 
 pub fn part2(input: &str) -> u32 {
     let map = parse(input);
-    min_heat_loss(&map, 0, 0, map.len() - 1, map[0].len() - 1, true)
+    min_heat_loss(&map, true)
 }
 
 fn parse(input: &str) -> Vec<Vec<u32>> {
@@ -23,36 +23,27 @@ fn parse(input: &str) -> Vec<Vec<u32>> {
         .collect::<Vec<_>>()
 }
 
-fn min_heat_loss(
-    map: &Vec<Vec<u32>>,
-    y1: usize,
-    x1: usize,
-    y2: usize,
-    x2: usize,
-    ultra: bool,
-) -> u32 {
-    let mut dist = vec![vec![u32::MAX; map[0].len()]; map.len()];
-    let mut dist2: HashMap<(usize, usize, Direction, usize), u32> = HashMap::new();
+fn min_heat_loss(map: &Vec<Vec<u32>>, ultra: bool) -> u32 {
+    let (dest_y, dest_x) = (map.len() - 1, map[0].len() - 1);
+    let mut dist: HashMap<(usize, usize, Direction, usize), u32> = HashMap::new();
     let mut queue = BinaryHeap::new();
+    let start_state = State::new(0, 0, 0);
 
-    let state = State::new(0, y1, x1);
-    dist[0][0] = 0;
-    dist2.insert(state.key(), 0);
-    queue.push(state);
+    dist.insert(start_state.key(), 0);
+    queue.push(start_state);
 
     while let Some(u) = queue.pop() {
-        if u.y == y2 && u.x == x2 {
+        if u.y == dest_y && u.x == dest_x {
             return u.cost;
         }
 
-        if u.cost > dist2[&u.key()] {
+        if u.cost > dist[&u.key()] {
             continue;
         }
 
-        let neighbors = u.neighbors(map, ultra);
-        for v in neighbors {
-            if v.cost < *dist2.get(&v.key()).unwrap_or(&u32::MAX) {
-                dist2.insert(v.key(), v.cost);
+        for v in u.neighbors(map, ultra) {
+            if v.cost < *dist.get(&v.key()).unwrap_or(&u32::MAX) {
+                dist.insert(v.key(), v.cost);
                 queue.push(v);
             }
         }
