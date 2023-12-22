@@ -215,10 +215,8 @@ mod tests {
         assert_eq!(test_support::do_part(part2, EXAMPLE), 7);
     }
 
-    /// 93325 too low
-    ///
     #[test]
     fn part2_solution() {
-        assert_eq!(test_support::do_part(part2, &read_input(DAY)), 0);
+        assert_eq!(test_support::do_part(part2, &read_input(DAY)), 96356);
     }
 }
