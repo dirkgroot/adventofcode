@@ -1,6 +1,13 @@
+use rust_decimal::prelude::{FromPrimitive, One, ToPrimitive, Zero};
+use rust_decimal::Decimal;
+
 pub fn part1(input: &str, y1: f64, x1: f64, y2: f64, x2: f64) -> usize {
     let hail = parse(input);
 
+    let y1 = Decimal::from_f64(y1).unwrap();
+    let x1 = Decimal::from_f64(x1).unwrap();
+    let y2 = Decimal::from_f64(y2).unwrap();
+    let x2 = Decimal::from_f64(x2).unwrap();
     hail.iter()
         .enumerate()
         .flat_map(|(a, hs1)| {
@@ -21,12 +28,14 @@ pub fn part2(input: &str) -> usize {
             let y = n - x;
             for adjust_x in [-1, 1] {
                 for adjust_y in [-1, 1] {
-                    let ax = (x * adjust_x) as f64;
-                    let ay = (y * adjust_y) as f64;
+                    let ax = x * adjust_x;
+                    let ay = y * adjust_y;
 
-                    if ax == -193.0 && ay == -230.0 {
+                    if ax == -193 && ay == -230 {
                         println!("This is the solution!");
                     }
+                    let ax: Decimal = ax.into();
+                    let ay: Decimal = ay.into();
 
                     let adjusted = hail
                         .iter()
@@ -48,10 +57,7 @@ pub fn part2(input: &str) -> usize {
                         match p {
                             None => break,
                             _ if intersection.is_none() => intersection = p,
-                            _ if p != intersection => {
-                                p = h2.intersection(h1);
-                                break;
-                            }
+                            _ if p != intersection => break,
                             _ => {}
                         }
                     }
@@ -64,7 +70,7 @@ pub fn part2(input: &str) -> usize {
                         let t = h.get_t(i.y, i.x);
                         let z = h.pos.z + t * (h.velocity.z - i.z);
 
-                        return (i.x + i.y + z) as usize;
+                        return (i.x + i.y + z).to_usize().unwrap();
                     }
                 }
             }
@@ -97,18 +103,23 @@ impl Hailstone {
         let (a1, b1) = self.ab();
         let (a2, b2) = other.ab();
         if a1 != a2 {
-            let (x, y) = if a1.is_infinite() {
-                (self.pos.x, a2 * (self.pos.x - other.pos.x) + other.pos.y)
-            } else if a2.is_infinite() {
-                (other.pos.x, a1 * (other.pos.x - self.pos.x) + self.pos.y)
-            } else {
-                let x = (b2 - b1) / (a1 - a2);
-                (x, a1 * x + b1)
+            let (x, y) = match (a1, a2) {
+                (None, Some(a2)) => (self.pos.x, a2 * (self.pos.x - other.pos.x) + other.pos.y),
+                (Some(a1), None) => (other.pos.x, a1 * (other.pos.x - self.pos.x) + self.pos.y),
+                (Some(a1), Some(a2)) => {
+                    let x = (b2 - b1) / (a1 - a2);
+                    (x, a1 * x + b1)
+                }
+                _ => panic!(),
             };
+            let (x, y) = (x.round(), y.round());
 
             if self.is_future(x) && other.is_future(x) {
                 let t_self = self.get_t(y, x);
                 let t_other = other.get_t(y, x);
+                if t_self == t_other {
+                    return None;
+                }
                 let z = (self.pos.z - other.pos.z + t_self * self.velocity.z
                     - t_other * other.velocity.z)
                     / (t_self - t_other);
@@ -121,38 +132,41 @@ impl Hailstone {
         }
     }
 
-    fn get_t(&self, y: f64, x: f64) -> f64 {
-        if self.velocity.x == 0.0 {
+    fn get_t(&self, y: Decimal, x: Decimal) -> Decimal {
+        if self.velocity.y.is_zero() && self.velocity.x.is_zero() {
+            return Decimal::zero();
+        }
+        if self.velocity.x.is_zero() {
             (y - self.pos.y) / self.velocity.y
         } else {
             (x - self.pos.x) / self.velocity.x
         }
     }
 
-    fn is_future(&self, x: f64) -> bool {
+    fn is_future(&self, x: Decimal) -> bool {
         (x - self.pos.x).is_sign_negative() == self.velocity.x.is_sign_negative()
     }
 
-    fn ab(&self) -> (f64, f64) {
-        let a = if self.velocity.x == 0.0 {
-            f64::INFINITY
+    fn ab(&self) -> (Option<Decimal>, Decimal) {
+        if self.velocity.x.is_zero() {
+            (None, Decimal::one())
         } else {
-            self.velocity.y / self.velocity.x
-        };
-        let b = self.pos.y - a * self.pos.x;
-        (a, b)
+            let a = self.velocity.y / self.velocity.x;
+            let b = self.pos.y - a * self.pos.x;
+            (Some(a), b)
+        }
     }
 }
 
 #[derive(Copy, Clone, Debug, PartialEq)]
 struct Point3D {
-    x: f64,
-    y: f64,
-    z: f64,
+    x: Decimal,
+    y: Decimal,
+    z: Decimal,
 }
 
 impl Point3D {
-    pub fn new(x: f64, y: f64, z: f64) -> Self {
+    pub fn new(x: Decimal, y: Decimal, z: Decimal) -> Self {
         Self { x, y, z }
     }
 
