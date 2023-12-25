@@ -6,6 +6,7 @@ version = 3
 name = "adventofcode-rust"
 version = "0.1.0"
 dependencies = [
+ "rand",
  "regex",
  "rust_decimal",
  "rust_decimal_macros",

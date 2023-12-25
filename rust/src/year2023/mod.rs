@@ -21,6 +21,7 @@ pub mod day19;
 pub mod day20;
 pub mod day22;
 pub mod day24;
+pub mod day25;
 
 #[cfg(test)]
 fn read_input(day: i32) -> String {
