@@ -69,8 +69,8 @@ private fun longestPath(edges: MutableSet<Edge>, from: Vertex, to: Vertex): Int 
             .toSet()
     }
 
-    var optimum = shortestPath(edges, from, to, emptySet())
-    var bound = optimum
+    var optimum = 0
+    var bound = 0
     val queue = PriorityQueue<Candidate> { a, b -> b.cost.compareTo(a.cost) }
     queue.add(Candidate(from, 0))
 
@@ -112,31 +112,6 @@ private fun neighbors(map: Array<CharArray>, vertex: Vertex): List<Vertex> {
         result.add(Vertex(vertex.y, vertex.x - 1))
     }
     return result
-}
-
-private fun shortestPath(edges: Collection<Edge>, from: Vertex, to: Vertex, blocked: Set<Vertex>): Int {
-    data class State(val vertex: Vertex, val cost: Int)
-
-    val dist = mutableMapOf(from to 0)
-    val queue = PriorityQueue<State> { a, b -> b.cost.compareTo(a.cost) }
-
-    queue.add(State(from, 0))
-
-    while (queue.isNotEmpty()) {
-        val u = queue.poll()
-
-        edges.asSequence().filter { !blocked.contains(it.v2) && it.v1 == u.vertex }
-            .map { it.v2 to it.cost }
-            .forEach { (v, cost) ->
-                val alt = dist.getValue(u.vertex) + cost
-                if (alt < dist.getOrDefault(v, Int.MAX_VALUE)) {
-                    dist[v] = alt
-                    queue.add(State(v, alt))
-                }
-            }
-    }
-
-    return dist[to] ?: -1
 }
 
 private data class Edge(val v1: Vertex, val v2: Vertex, val cost: Int, var block: Boolean = false)
