@@ -51,7 +51,6 @@ private fun walk(map: Array<CharArray>, path: Sequence<Instruction>, next: (Posi
                     .filter { (r, c, _) -> map[r][c] != ' ' }
                     .take(instr.steps + 1)
                     .takeWhile { (r, c, _) -> map[r][c] != '#' }
-                    .onEach { (r, c, f) -> map[r][c] = f.char }
                     .last()
             }
 
@@ -74,20 +73,20 @@ private sealed interface Instruction {
     data class Turn(val direction: String) : Instruction
 }
 
-private enum class Facing(val char: Char, val value: Int) {
-    R('>', 0) {
+private enum class Facing(val value: Int) {
+    R(0) {
         override fun rotateLeft() = U
         override fun rotateRight() = D
     },
-    D('v', 1) {
+    D(1) {
         override fun rotateLeft() = R
         override fun rotateRight() = L
     },
-    L('<', 2) {
+    L(2) {
         override fun rotateLeft() = D
         override fun rotateRight() = U
     },
-    U('^', 3) {
+    U(3) {
         override fun rotateLeft() = L
         override fun rotateRight() = R
     };
