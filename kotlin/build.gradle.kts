@@ -15,7 +15,7 @@ dependencies {
 
     testImplementation(kotlin("test-junit5"))
 
-    testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
+    testImplementation("io.kotest:kotest-runner-junit5:5.8.1")
     testImplementation("io.kotest:kotest-property:5.8.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.10.2")
