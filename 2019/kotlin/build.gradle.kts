@@ -16,7 +16,7 @@ dependencies {
     testImplementation(kotlin("test-junit5"))
 
     testImplementation("io.kotest:kotest-runner-junit5:5.8.0")
-    testImplementation("io.kotest:kotest-property:5.8.0")
+    testImplementation("io.kotest:kotest-property:5.9.1")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.11.0")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.11.0")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.28.1")
