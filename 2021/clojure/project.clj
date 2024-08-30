@@ -4,7 +4,7 @@
   :license {:name "MIT"
             :url  "https://github.com/dirkgroot/adventofcode/blob/main/LICENSE"}
   :dependencies [[org.clojure/clojure "1.11.4"]
-                 [org.clojure/data.priority-map "1.1.0"]]
+                 [org.clojure/data.priority-map "1.2.0"]]
   :repl-options {:init-ns adventofcode-clojure.core}
   :test-selectors {:2021 [(fn [n & _]
                             (.startsWith (str n) "adventofcode.year2021"))
