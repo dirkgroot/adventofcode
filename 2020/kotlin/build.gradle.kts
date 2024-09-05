@@ -11,7 +11,7 @@ repositories {
 
 dependencies {
     implementation(kotlin("stdlib"))
-    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.7")
+    implementation("org.jetbrains.kotlinx:kotlinx-collections-immutable:0.3.8")
 
     testImplementation(kotlin("test-junit5"))
 
