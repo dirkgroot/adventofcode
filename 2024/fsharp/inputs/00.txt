@@ -1,2 +1,1 @@
-Hello Advent of Code!
-Let's write some FSharp!
+42

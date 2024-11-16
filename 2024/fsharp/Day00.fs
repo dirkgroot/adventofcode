@@ -1,12 +1,29 @@
-module AdventOfCode2024.``Day 00``
+module AoC.Day00
 
-open AdventOfCode2024.Util
-open FsUnit
+open AoC
+open AoC.Puzzle
+open FsUnitTyped
 open Xunit
 
-[<Fact>]
-let ``Part 1`` () =
-    let totalLength =
-        Input.lines 0 |> Seq.map _.Length |> Seq.reduce (fun acc len -> acc + len)
+let part1 (input: string) = input |> int
 
-    totalLength |> should equal 45
+let part2 (input: string) = input |> int |> (fun i -> i * 2)
+
+[<Literal>]
+let DAY = 0
+
+[<Fact>]
+let ``part 1 - example`` () =
+    Day DAY |> withInput (Value "1") |> solvedWith part1 |> shouldEqual 1
+
+[<Fact>]
+let ``part 1 - solution`` () =
+    Day DAY |> withInput FromFile |> solvedWith part1 |> shouldEqual 42
+
+[<Fact>]
+let ``part 2 - example`` () =
+    Day DAY |> withInput (Value "1") |> solvedWith part2 |> shouldEqual 2
+
+[<Fact>]
+let ``part 2 - solution`` () =
+    Day DAY |> withInput FromFile |> solvedWith part2 |> shouldEqual 84
