@@ -49,5 +49,6 @@ let main _ =
     printfn "----+--------------------------------+----------------+--------------------------------+----------------"
 
     logTimedSolve 00 Day00.part1 Day00.part2
+    logTimedSolve 01 Day01.part1 Day01.part2
 
     0
