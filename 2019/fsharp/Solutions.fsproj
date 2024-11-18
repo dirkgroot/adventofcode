@@ -22,8 +22,10 @@
 
     <ItemGroup>
         <Compile Include="Puzzle.fs"/>
+        <Compile Include="IntCode.fs" />
         <Compile Include="Day00.fs"/>
         <Compile Include="Day01.fs" />
+        <Compile Include="Day02.fs" />
         <Compile Include="Program.fs" />
     </ItemGroup>
 </Project>
