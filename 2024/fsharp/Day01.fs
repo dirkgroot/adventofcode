@@ -19,8 +19,8 @@ let part1 (input: string) =
 
 let part2 (input: string) =
     let left, right = parse input
-    let occurrences = Seq.countBy id right |> Map.ofSeq
-    let similarityScore id1 = id1 * (Map.tryFind id1 occurrences |> Option.defaultValue 0)
+    let occurrences = right |> Seq.countBy id |> Map.ofSeq
+    let similarityScore id1 = id1 * (occurrences |> Map.tryFind id1 |> Option.defaultValue 0)
 
     left |> Seq.sumBy similarityScore
 
