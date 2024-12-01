@@ -14,8 +14,9 @@ private fun part1(input: String) =
     }
 
 private fun part2(input: String) =
-    parse(input)
-        .let { (left, right) -> left.sumOf { id1 -> id1 * right.count { id2 -> id2 == id1 } } }
+    parse(input).let { (left, right) ->
+        left.sumOf { id1 -> id1 * right.count { id2 -> id2 == id1 } }
+    }
 
 private fun parse(input: String) =
     input.lineSequence()
