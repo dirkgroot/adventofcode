@@ -17,10 +17,10 @@ private fun part2(input: String) =
     }
 
 private fun parse(input: String) =
-    input.lineSequence()
-        .map { it.split("   ") }
-        .map { it[0].toInt() to it[1].toInt() }
-        .fold(listOf<Int>() to listOf<Int>()) { (left, right), (id1, id2) -> left + id1 to right + id2 }
+    input.splitToSequence("   ", "\n")
+        .map { it.toInt() }
+        .chunked(2).map { (a, b) -> a to b }
+        .unzip()
 
 class Day01Test {
     @Test
