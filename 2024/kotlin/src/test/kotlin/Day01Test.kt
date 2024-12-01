@@ -1,9 +1,7 @@
-package nl.dirkgroot.adventofcode
-
 import assertk.assertThat
 import assertk.assertions.isEqualTo
-import nl.dirkgroot.adventofcode.util.input
-import nl.dirkgroot.adventofcode.util.invokedWith
+import util.input
+import util.invokedWith
 import org.junit.jupiter.api.Test
 import kotlin.math.abs
 

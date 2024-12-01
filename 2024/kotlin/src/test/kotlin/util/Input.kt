@@ -1,4 +1,4 @@
-package nl.dirkgroot.adventofcode.util
+package util
 
 import java.io.BufferedReader
 import kotlin.time.measureTimedValue
