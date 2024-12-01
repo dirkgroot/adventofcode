@@ -5,10 +5,10 @@ open System.Diagnostics
 open AoC
 open AoC.Puzzle
 
-type TimedSolution<'TAnswer> =
+type TimedSolution<'TAnswer1, 'TAnswer2> =
     { Day: Day
-      Solution1: 'TAnswer
-      Solution2: 'TAnswer
+      Solution1: 'TAnswer1
+      Solution2: 'TAnswer2
       Elapsed1: TimeSpan
       Elapsed2: TimeSpan }
 
