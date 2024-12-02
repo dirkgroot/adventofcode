@@ -8,33 +8,15 @@ open Xunit
 let parse (input: string) = input.Split('\n') |> Seq.map (fun line -> line.Split(' ') |> Seq.map int)
 
 let isSafe (levels: int seq) =
-    let inc =
-        levels
-        |> Seq.windowed 2
-        |> Seq.map (fun ll -> ll[1] - ll[0])
-        |> Seq.filter (fun diff -> (diff >= 1 && diff <= 3))
-        |> Seq.length
-
-    let dec =
-        levels
-        |> Seq.windowed 2
-        |> Seq.map (fun ll -> ll[1] - ll[0])
-        |> Seq.filter (fun diff -> (diff >= -3 && diff <= -1))
-        |> Seq.length
+    let diffs = levels |> Seq.windowed 2 |> Seq.map (fun pair -> pair[1] - pair[0])
+    let inc = diffs |> Seq.filter (fun diff -> (diff >= 1 && diff <= 3)) |> Seq.length
+    let dec = diffs |> Seq.filter (fun diff -> (diff >= -3 && diff <= -1)) |> Seq.length
 
     inc = (Seq.length levels) - 1 || dec = (Seq.length levels) - 1
 
 let isSafe2 (levels: int seq) =
-    let levels = Seq.toArray levels
-
-    if isSafe levels then
-        true
-    else
-        [ 0 .. (Seq.length levels - 1) ]
-        |> Seq.map (fun i -> Array.removeAt i levels)
-        |> Seq.filter isSafe
-        |> Seq.isEmpty
-        |> not
+    isSafe levels
+    || levels |> Seq.mapi (fun i _ -> Seq.removeAt i levels) |> Seq.exists isSafe
 
 let part1 (input: string) = input |> parse |> Seq.filter isSafe |> Seq.length
 
