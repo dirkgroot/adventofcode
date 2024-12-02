@@ -12,13 +12,13 @@ let isSafe (levels: int seq) =
     let allInRange min max = Seq.forall (fun i -> i >= min && i <= max)
     (diffs |> allInRange 1 3) || (diffs |> allInRange -3 -1)
 
-let isSafe2 (levels: int seq) =
-    isSafe levels
-    || levels |> Seq.mapi (fun i _ -> Seq.removeAt i levels) |> Seq.exists isSafe
+let isSafeWithProblemDampener (levels: int seq) =
+    let dampened = levels |> Seq.mapi (fun i _ -> Seq.removeAt i levels)
+    isSafe levels || dampened |> Seq.exists isSafe
 
 let part1 (input: string) = input |> parse |> Seq.filter isSafe |> Seq.length
 
-let part2 (input: string) = input |> parse |> Seq.filter isSafe2 |> Seq.length
+let part2 (input: string) = input |> parse |> Seq.filter isSafeWithProblemDampener |> Seq.length
 
 [<Literal>]
 let DAY = 2
