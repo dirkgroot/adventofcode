@@ -9,9 +9,8 @@ let parse (input: string) = input.Split('\n') |> Seq.map (fun line -> line.Split
 
 let isSafe (levels: int seq) =
     let diffs = levels |> Seq.windowed 2 |> Seq.map (fun pair -> pair[1] - pair[0])
-
-    (diffs |> Seq.forall (fun diff -> diff >= 1 && diff <= 3))
-    || (diffs |> Seq.forall (fun diff -> diff >= -3 && diff <= -1))
+    let allInRange min max = Seq.forall (fun i -> i >= min && i <= max)
+    (diffs |> allInRange 1 3) || (diffs |> allInRange -3 -1)
 
 let isSafe2 (levels: int seq) =
     isSafe levels
