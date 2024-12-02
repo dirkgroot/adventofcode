@@ -1,1 +1,5 @@
 *.DS_Store
+**/inputs/*.txt
+**/inputs/**/*.txt
+**/input/*.txt
+**/input/**/*.txt
