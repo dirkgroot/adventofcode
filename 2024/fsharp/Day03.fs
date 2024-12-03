@@ -22,27 +22,22 @@ type State =
 
 let parse input =
     Regex.Matches(input, @"do\(\)|don't\(\)|mul\((\d+),(\d+)\)")
-    |> Seq.map (fun instr ->
-        if instr.Value.StartsWith "don't" then Dont
-        elif instr.Value.StartsWith "do" then Do
-        else Mul(int instr.Groups[1].Value, int instr.Groups[2].Value))
+    |> Seq.map (fun m ->
+        if m.Value.StartsWith "don't" then Dont
+        elif m.Value.StartsWith "do" then Do
+        else Mul(int m.Groups[1].Value, int m.Groups[2].Value))
 
 let execute state instruction =
-    match state with
-    | NotDoing j ->
-        match instruction with
-        | Do -> Doing j
-        | _ -> state
-    | Doing j ->
-        match instruction with
-        | Do -> Doing j
-        | Dont -> NotDoing j
-        | Mul(a, b) -> Doing(j + (a * b))
+    match state, instruction with
+    | Doing result, Dont -> NotDoing result
+    | NotDoing result, Do -> Doing result
+    | Doing result, Mul(a, b) -> Doing(result + (a * b))
+    | _ -> state
 
 let part2 (input: string) =
     match parse input |> Seq.fold execute (Doing 0) with
-    | Doing j -> j
-    | NotDoing j -> j
+    | Doing result -> result
+    | NotDoing result -> result
 
 [<Literal>]
 let DAY = 3
