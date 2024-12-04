@@ -16,55 +16,45 @@ let lines (input: string) : char seq seq = input.Split('\n') |> Seq.map _.ToChar
 
 let diags (input: string) : char seq seq =
     let lines = input.Split('\n')
-    let width = lines[0].Length
-    let maxXY = width - 1
+    let maxXY = lines[0].Length - 1
     let diags = lines[0].Length * 2
 
     seq {
         for diag in 0 .. (diags - 1) do
-            let startx = max 0 (diag - width + 1)
+            let startx = max 0 (diag - maxXY)
             let starty1 = min maxXY diag
             let starty2 = max 0 (maxXY - diag)
-            let max = if startx = 0 then starty1 else (width - startx - 1)
+            let max = if startx = 0 then starty1 else (maxXY - startx)
 
             yield seq { for i in 0..max -> lines[starty1 - i][startx + i] }
             yield seq { for i in 0..max -> lines[starty2 + i][startx + i] }
     }
 
 let part1 (input: string) =
-    let cols = columns input
-    let lines = lines input
-    let diagonals = diags input
-
     let countXMAS chars =
         chars
         |> Seq.windowed 4
         |> Seq.filter (fun s -> s = [| 'X'; 'M'; 'A'; 'S' |])
         |> Seq.length
 
-    let all = Seq.concat [| cols; lines; diagonals |]
-    let reverse = all |> Seq.map Seq.rev
+    let forward = Seq.concat [| columns input; lines input; diags input |]
+    let reverse = forward |> Seq.map Seq.rev
 
-    Seq.concat [| all; reverse |] |> Seq.map countXMAS |> Seq.sum
+    Seq.concat [| forward; reverse |] |> Seq.map countXMAS |> Seq.sum
 
 let part2 (input: string) =
     let grid = input.Split('\n') |> Array.map _.ToCharArray()
     let maxXY = grid.Length - 3
 
     let getX y x =
-        [| grid[y][x]
-           grid[y][x + 2]
-           grid[y + 1][x + 1]
-           grid[y + 2][x]
-           grid[y + 2][x + 2] |]
+        [| 0, 0; 0, 2; 1, 1; 2, 0; 2, 2 |]
+        |> Seq.map (fun (dy, dx) -> grid[y + dy][x + dx])
+        |> String.Concat
 
     let permutations = set [ "MMASS"; "SSAMM"; "MSAMS"; "SMASM" ]
 
-    seq {
-        for y in 0..maxXY do
-            for x in 0..maxXY do
-                yield getX y x |> String
-    }
+    seq { for y in 0..maxXY -> { 0..maxXY } |> Seq.map (getX y) }
+    |> Seq.concat
     |> Seq.filter (fun x -> Set.contains x permutations)
     |> Seq.length
 
