@@ -43,6 +43,7 @@ let part1 (input: string) =
     Seq.concat [| forward; reverse |] |> Seq.map countXMAS |> Seq.sum
 
 let part2 (input: string) =
+    let permutations = set [ "MMASS"; "SSAMM"; "MSAMS"; "SMASM" ]
     let grid = input.Split('\n') |> Array.map _.ToCharArray()
     let maxXY = grid.Length - 3
 
@@ -50,8 +51,6 @@ let part2 (input: string) =
         [| 0, 0; 0, 2; 1, 1; 2, 0; 2, 2 |]
         |> Seq.map (fun (dy, dx) -> grid[y + dy][x + dx])
         |> String.Concat
-
-    let permutations = set [ "MMASS"; "SSAMM"; "MSAMS"; "SMASM" ]
 
     seq { for y in 0..maxXY -> { 0..maxXY } |> Seq.map (getX y) }
     |> Seq.concat
