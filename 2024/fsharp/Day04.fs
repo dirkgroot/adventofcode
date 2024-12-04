@@ -31,11 +31,8 @@ let diags (input: string) : char seq seq =
     }
 
 let part1 (input: string) =
-    let countXMAS chars =
-        chars
-        |> Seq.windowed 4
-        |> Seq.filter (fun s -> s = [| 'X'; 'M'; 'A'; 'S' |])
-        |> Seq.length
+    let xmas = [| 'X'; 'M'; 'A'; 'S' |]
+    let countXMAS chars = chars |> Seq.windowed 4 |> Seq.filter (fun s -> s = xmas) |> Seq.length
 
     let forward = Seq.concat [| columns input; lines input; diags input |]
     let reverse = forward |> Seq.map Seq.rev
@@ -44,17 +41,14 @@ let part1 (input: string) =
 
 let part2 (input: string) =
     let permutations = set [ "MMASS"; "SSAMM"; "MSAMS"; "SMASM" ]
+    let xOffsets = [| 0, 0; 0, 2; 1, 1; 2, 0; 2, 2 |]
     let grid = input.Split('\n') |> Array.map _.ToCharArray()
     let maxXY = grid.Length - 3
+    let crossAt y x = xOffsets |> Seq.map (fun (dy, dx) -> grid[y + dy][x + dx]) |> String.Concat
 
-    let getX y x =
-        [| 0, 0; 0, 2; 1, 1; 2, 0; 2, 2 |]
-        |> Seq.map (fun (dy, dx) -> grid[y + dy][x + dx])
-        |> String.Concat
-
-    seq { for y in 0..maxXY -> { 0..maxXY } |> Seq.map (getX y) }
+    seq { for y in 0..maxXY -> { 0..maxXY } |> Seq.map (crossAt y) }
     |> Seq.concat
-    |> Seq.filter (fun x -> Set.contains x permutations)
+    |> Seq.filter (fun cross -> Set.contains cross permutations)
     |> Seq.length
 
 [<Literal>]
