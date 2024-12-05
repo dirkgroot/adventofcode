@@ -5,8 +5,6 @@ open AoC.Puzzle
 open FsUnitTyped
 open Xunit
 
-type Rule = int * int
-
 let parse (input: string) =
     let sections = input.Split("\n\n")
 
