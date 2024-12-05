@@ -13,17 +13,19 @@ let parse (input: string) =
     let rules =
         sections[0].Split('\n')
         |> Seq.map (fun rule -> let is = rule.Split('|') in (int is[0], int is[1]))
+        |> Seq.toArray
 
     let updates =
         sections[1].Split('\n')
         |> Seq.map (fun update -> update.Split(',') |> Seq.map int |> Seq.toList)
+        |> Seq.toArray
 
     rules, updates
 
-let matchesAllRules rules fst rest =
+let matchesAllRules rules first rest =
     rules
-    |> Seq.map (fun (a, b) -> if b <> fst then true else not (List.contains a rest))
-    |> Seq.reduce (fun acc b -> acc && b)
+    |> Seq.map (fun (a, b) -> if first <> b then true else List.contains a rest |> not)
+    |> Seq.reduce (&&)
 
 [<TailCall>]
 let rec isValid rules update =
@@ -31,29 +33,24 @@ let rec isValid rules update =
     | fst :: rest -> matchesAllRules rules fst rest && isValid rules rest
     | _ -> true
 
+let middle (list: 'a list) = list[list.Length / 2]
+
 let part1 (input: string) =
     let rules, updates = parse input
-
-    updates
-    |> Seq.filter (isValid rules)
-    |> Seq.map (fun u -> u[u.Length / 2])
-    |> Seq.sum
+    updates |> Seq.filter (isValid rules) |> Seq.map middle |> Seq.sum
 
 let part2 (input: string) =
     let rules, updates = parse input
 
-    let compareU a b =
-        let rule = rules |> Seq.tryFind (fun (ra, rb) -> (ra = a && rb = b) || (ra = b && rb = a))
-        match rule with
-        | Some (ra, rb) -> if (a = ra && b = rb) then -1 else 1
+    let compare a b =
+        match (rules |> Seq.tryFind (fun r -> r = (a, b) || r = (b, a))) with
+        | Some r -> if r = (a, b) then -1 else 1
         | None -> 0
-    
-    let sort update = update |> List.sortWith compareU
 
     updates
-    |> Seq.filter (fun fSharpList -> not (isValid rules fSharpList))
-    |> Seq.map sort
-    |> Seq.map (fun u -> u[u.Length / 2])
+    |> Seq.filter (fun update -> isValid rules update |> not)
+    |> Seq.map (List.sortWith compare)
+    |> Seq.map middle
     |> Seq.sum
 
 [<Literal>]
