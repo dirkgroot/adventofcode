@@ -1,5 +1,6 @@
 module AoC.Day06
 
+open System.Collections.Generic
 open AoC
 open AoC.Puzzle
 open FsUnitTyped
@@ -50,15 +51,17 @@ let path guard grid =
     |> Seq.choose id
 
 [<TailCall>]
-let rec detect visited (position, direction) grid =
-    if Set.contains (position, direction) visited then
+let rec detect (visited: HashSet<(int * int) * (int * int)>) (position, direction) grid =
+    if visited.Contains((position, direction)) then
         true
     else
         match step (position, direction) grid with
         | None -> false
-        | Some(p2, d2) -> detect (visited.Add(position, direction)) (p2, d2) grid
+        | Some(p2, d2) ->
+            visited.Add(position, direction) |> ignore
+            detect visited (p2, d2) grid
 
-let hasLoop (position, direction) grid = detect Set.empty (position, direction) grid
+let hasLoop (position, direction) grid = detect (HashSet()) (position, direction) grid
 
 let part1 (input: string) =
     let grid = parse input
