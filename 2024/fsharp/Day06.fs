@@ -8,7 +8,7 @@ open Xunit
 
 let parse (input: string) = input.Split('\n')
 
-let parseWithObstacle (input: string) (y, x) =
+let parseWithObstacle (input: string) struct (y, x) =
     let grid = input.Split('\n')
     grid[y] <- grid[y].Substring(0, x) + "O" + grid[y].Substring(x + 1)
     grid
@@ -19,28 +19,28 @@ let positions (grid: string array) =
 
         for y in dim do
             for x in dim do
-                yield (y, x)
+                yield struct (y, x)
     }
 
-let findGuard (grid: string array) = positions grid |> Seq.find (fun (y, x) -> grid[y][x] = '^')
+let findGuard (grid: string array) = positions grid |> Seq.find (fun struct (y, x) -> grid[y][x] = '^')
 
-let rotate ((y, x), (dy, dx)) =
+let rotate struct (struct (y, x), struct (dy, dx)) =
     match (dy, dx) with
-    | -1, 0 -> (y, x), (0, 1)
-    | 0, 1 -> (y, x), (1, 0)
-    | 1, 0 -> (y, x), (0, -1)
-    | _ -> (y, x), (-1, 0)
+    | -1, 0 -> struct (struct (y, x), struct (0, 1))
+    | 0, 1 -> struct (struct (y, x), struct (1, 0))
+    | 1, 0 -> struct (struct (y, x), struct (0, -1))
+    | _ -> struct (struct (y, x), struct (-1, 0))
 
-let step ((y, x), (dy, dx)) (grid: string array) =
+let step struct (struct (y, x), struct (dy, dx)) (grid: string array) =
     let y1, x1 = y + dy, x + dx
     let maxXY = grid.Length - 1
 
     if (y1 < 0 || y1 > maxXY || x1 < 0 || x1 > maxXY) then
         None
     else if grid[y1][x1] = '#' || grid[y1][x1] = 'O' then
-        Some(rotate ((y, x), (dy, dx)))
+        Some(rotate struct (struct (y, x), struct (dy, dx)))
     else
-        Some((y1, x1), (dy, dx))
+        Some struct (struct (y1, x1), struct (dy, dx))
 
 let path guard grid =
     Some guard
@@ -51,32 +51,35 @@ let path guard grid =
     |> Seq.choose id
 
 [<TailCall>]
-let rec detect (visited: HashSet<(int * int) * (int * int)>) (position, direction) grid =
-    if visited.Contains((position, direction)) then
+let rec detect (visited: HashSet<struct (struct (int * int) * struct (int * int))>) struct (position, direction) grid =
+    if visited.Contains(struct (position, direction)) then
         true
     else
-        match step (position, direction) grid with
+        match step struct (position, direction) grid with
         | None -> false
         | Some(p2, d2) ->
-            visited.Add(position, direction) |> ignore
+            visited.Add struct (position, direction) |> ignore
             detect visited (p2, d2) grid
 
-let hasLoop (position, direction) grid = detect (HashSet()) (position, direction) grid
+let hasLoop struct (position, direction) grid = detect (HashSet()) struct (position, direction) grid
 
 let part1 (input: string) =
     let grid = parse input
-    let guard = (findGuard grid), (-1, 0)
+    let guard = struct ((findGuard grid), struct (-1, 0))
 
-    path guard grid |> Seq.map fst |> Seq.distinct |> Seq.length
+    path guard grid
+    |> Seq.map (fun struct (a, _) -> a)
+    |> Seq.distinct
+    |> Seq.length
 
 let part2 (input: string) =
     let grid = parse input
     let guardPosition = findGuard grid
-    let guard = guardPosition, (-1, 0)
+    let guard = struct (guardPosition, struct (-1, 0))
 
     let obstacles =
         path guard grid
-        |> Seq.map fst
+        |> Seq.map (fun struct (a, _) -> a)
         |> Seq.distinct
         |> Seq.filter ((<>) guardPosition)
 
