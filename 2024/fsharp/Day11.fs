@@ -6,14 +6,14 @@ open AoC.Puzzle
 open FsUnitTyped
 open Xunit
 
-let parse (input: string) = input.Split(' ') |> Seq.map int64 |> Seq.toArray
+let parse (input: string) = input.Split(' ') |> Seq.map int64
 
 let digitCount (i: int64) = i.ToString().Length
 
-let cache = Dictionary<int * int64, int64>()
+let cache = Dictionary<struct (int * int64), int64>()
 
 let rec count (step: int) (i: int64) : int64 =
-    if cache.ContainsKey(step, i) then
+    if cache.ContainsKey(struct (step, i)) then
         cache[step, i]
     else
         let result: int64 =
@@ -30,7 +30,7 @@ let rec count (step: int) (i: int64) : int64 =
                 else
                     count (step - 1) (i * 2024L)
 
-        cache.Add((step, i), result)
+        cache.Add(struct (step, i), result)
         result
 
 let part1 (input: string) = parse input |> Seq.map (count 25) |> Seq.sum

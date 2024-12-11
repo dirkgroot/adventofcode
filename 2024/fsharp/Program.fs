@@ -59,5 +59,6 @@ let main _ =
     logTimedSolve 08 Day08.part1 Day08.part2
     logTimedSolve 09 Day09.part1 Day09.part2
     logTimedSolve 10 Day10.part1 Day10.part2
+    logTimedSolve 11 Day11.part1 Day11.part2
 
     0
