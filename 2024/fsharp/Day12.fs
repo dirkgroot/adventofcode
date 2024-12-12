@@ -6,23 +6,27 @@ open AoC.Utils
 open FsUnitTyped
 open Xunit
 
-let rec floodFill y x (toFill: int) (fillWith: int) (grid: int array array) =
+let rec floodFill y x (fillWith: int) (grid: int array array) =
     let maxXY = grid.Length - 1
+    let toFill = grid[y][x]
 
-    if grid[y][x] <> toFill || toFill > 1000 then
-        grid
-    else
-        grid[y][x] <- fillWith
+    let rec fill coords : unit =
+        if not (Seq.isEmpty coords) then
+            for y, x in coords do
+                grid[y][x] <- fillWith
 
-        let neighbors =
-            [| -1, 0; 0, 1; 1, 0; 0, -1 |]
-            |> Seq.map (fun (dy, dx) -> (y + dy, x + dx))
-            |> Seq.filter (fun (y, x) -> y >= 0 && y <= maxXY && x >= 0 && x <= maxXY)
+            let neighbors =
+                coords
+                |> Seq.collect (fun (y, x) -> [| -1, 0; 0, 1; 1, 0; 0, -1 |] |> Seq.map (fun (dy, dx) -> (y + dy, x + dx)))
+                |> Seq.filter (fun (y, x) -> y >= 0 && y <= maxXY && x >= 0 && x <= maxXY)
+                |> Seq.filter (fun (y, x) -> grid[y][x] = toFill)
+                |> Seq.distinct
+                |> Seq.toArray
 
-        for y, x in neighbors do
-            floodFill y x toFill fillWith grid |> ignore
+            fill neighbors
 
-        grid
+    fill [| y, x |]
+    grid
 
 let parse (input: string) =
     let grid =
@@ -32,7 +36,11 @@ let parse (input: string) =
 
     lines grid
     |> Seq.concat
-    |> Seq.mapi (fun i (y, x) -> floodFill y x (grid[y][x]) (i + 1000) grid)
+    |> Seq.mapi (fun i (y, x) ->
+        if grid[y][x] < 1000 then
+            floodFill y x (i + 1000) grid
+        else
+            grid)
     |> Seq.last
 
 let valueOf y x (grid: int array array) =
