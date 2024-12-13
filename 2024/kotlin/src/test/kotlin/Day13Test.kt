@@ -34,8 +34,9 @@ private data class Machine(
     val bPlusX: Long, val bPlusY: Long,
     val prizeX: Long, val prizeY: Long,
 ) {
-    val buttonA = (prizeY * bPlusX - prizeX * bPlusY) / (aPlusY * bPlusX - aPlusX * bPlusY)
-    val buttonB = (prizeY * aPlusX - aPlusY * prizeX) / (bPlusY * aPlusX - aPlusY * bPlusX)
+    val divideBy = bPlusX * aPlusY - bPlusY * aPlusX
+    val buttonA = (prizeY * bPlusX - prizeX * bPlusY) / divideBy
+    val buttonB = (prizeX * aPlusY - prizeY * aPlusX) / divideBy
     val cost =
         if (buttonA * aPlusX + buttonB * bPlusX == prizeX && buttonA * aPlusY + buttonB * bPlusY == prizeY)
             buttonA * 3L + buttonB
