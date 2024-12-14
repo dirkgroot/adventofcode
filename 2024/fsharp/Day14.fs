@@ -7,17 +7,14 @@ open FsUnitTyped
 open Xunit
 
 type Robot = (struct (int * int * int * int))
-
-[<Struct>]
 type Grid = { Width: int; Height: int }
 
 let parse (input: string) =
     let regex = Regex(@"p=(\d+),(\d+) v=(-?\d+),(-?\d+)")
 
     input.Split('\n')
-    |> Seq.map (fun line ->
-        let m = regex.Match(line)
-        Robot(int m.Groups[1].Value, int m.Groups[2].Value, int m.Groups[3].Value, int m.Groups[4].Value))
+    |> Seq.map (fun s -> (regex.Match s).Groups |> Seq.map _.Value |> Seq.toArray)
+    |> Seq.map (fun m -> Robot(int m[1], int m[2], int m[3], int m[4]))
 
 let move (grid: Grid) (robot: Robot) =
     let struct (x, y, vx, vy) = robot
@@ -27,7 +24,7 @@ let move (grid: Grid) (robot: Robot) =
 
 let moveAll (grid: Grid) (robots: Robot seq) = robots |> Seq.map (move grid) |> Seq.toArray
 
-let safetyFactor (grid: Grid) (robots: Robot seq) : int64 =
+let safetyFactor (grid: Grid) (robots: Robot seq) =
     [| 0, 0, grid.Height / 2, grid.Width / 2
        0, (grid.Width / 2) + 1, grid.Height / 2, grid.Width
        grid.Height / 2 + 1, 0, grid.Height, grid.Width / 2
@@ -36,13 +33,11 @@ let safetyFactor (grid: Grid) (robots: Robot seq) : int64 =
         robots
         |> Seq.filter (fun struct (rx, ry, _, _) -> rx >= x && rx < x2 && ry >= y && ry < y2)
         |> Seq.length)
-    |> Seq.map int64
     |> Seq.reduce (*)
 
-let part1 (grid: Grid) (input: string) : int64 =
-    let robots = input |> parse
-
-    robots
+let part1 (grid: Grid) (input: string) =
+    input
+    |> parse
     |> Seq.unfold (fun r -> let next = moveAll grid r in Some(next, next))
     |> Seq.take 100
     |> Seq.last
@@ -58,16 +53,13 @@ let pictureOf (grid: Grid) (robots: Robot seq) =
     |> String.concat "\n"
 
 let part2 (grid: Grid) (input: string) =
-    let robots = input |> parse
-
-    let answer, _ =
-        robots
-        |> Seq.unfold (fun r -> let next = moveAll grid r in Some(next, next))
-        |> Seq.map (pictureOf grid)
-        |> Seq.indexed
-        |> Seq.find (fun (_, s) -> s.Contains "****************")
-
-    answer + 1
+    input
+    |> parse
+    |> Seq.unfold (fun r -> let next = moveAll grid r in Some(next, next))
+    |> Seq.map (pictureOf grid)
+    |> Seq.indexed
+    |> Seq.find (fun (_, s) -> s.Contains "****************")
+    |> (fun (answer, _) -> answer + 1)
 
 [<Literal>]
 let DAY = 14
