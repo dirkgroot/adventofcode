@@ -40,8 +40,7 @@ let log timedSolve =
     printf " | "
     printfn $"%-14f{timedSolve.Elapsed2.TotalMilliseconds}"
 
-let logTimedSolve day part1 part2 =
-    Day day |> withInput FromFile |> timedSolveWith part1 part2 |> log
+let logTimedSolve day part1 part2 = Day day |> withInput FromFile |> timedSolveWith part1 part2 |> log
 
 [<EntryPoint>]
 let main _ =
@@ -62,5 +61,7 @@ let main _ =
     logTimedSolve 11 Day11.part1 Day11.part2
     logTimedSolve 12 Day12.part1 Day12.part2
     logTimedSolve 13 Day13.part1 Day13.part2
+    logTimedSolve 14 (Day14.part1 { Width = 101; Height = 103 }) (Day14.part2 { Width = 101; Height = 103 })
+    logTimedSolve 15 Day15.part1 Day15.part2
 
     0
