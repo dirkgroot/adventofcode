@@ -64,5 +64,6 @@ let main _ =
     logTimedSolve 14 (Day14.part1 { Width = 101; Height = 103 }) (Day14.part2 { Width = 101; Height = 103 })
     logTimedSolve 15 Day15.part1 Day15.part2
     logTimedSolve 16 Day16.part1 Day16.part2
+    logTimedSolve 17 Day17.part1 Day17.part2
 
     0
