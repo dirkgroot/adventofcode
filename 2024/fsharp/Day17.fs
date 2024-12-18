@@ -134,8 +134,8 @@ let rec minA computer candidate inc index =
     let toTry =
         seq { 0L .. 7L }
         |> Seq.map (fun i -> candidate + i * inc)
+        |> Seq.filter (fun i -> i > 0L)
         |> Seq.map (fun a -> a, run { computer with a = a })
-        |> Seq.filter (fun (_, c) -> c.output.Length = c.program.Length)
         |> Seq.filter (fun (_, c) -> c.output[index] = c.program[index])
         |> Seq.map fst
 
