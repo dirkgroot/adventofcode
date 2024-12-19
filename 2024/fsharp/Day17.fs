@@ -61,7 +61,7 @@ let comboValue computer operand =
 
 let dv (num: int64) (denom: int64) = num / int64 (2.0 ** float denom)
 
-let perform computer instruction =
+let executeInstruction computer instruction =
     match instruction with
     | Adv operand ->
         { computer with
@@ -97,17 +97,17 @@ let perform computer instruction =
             output = computer.output @ [ (comboValue computer operand) % 8L ]
             ip = computer.ip + 2 }
 
-let next computer =
+let executeNextInstruction computer =
     let opcode = computer.program[computer.ip]
     let operand = computer.program[computer.ip + 1]
-    perform computer (parseInstruction opcode operand)
+    executeInstruction computer (parseInstruction opcode operand)
 
 [<TailCall>]
 let rec run computer =
     if computer.ip >= computer.program.Length then
         computer
     else
-        run (next computer)
+        run (executeNextInstruction computer)
 
 let parse (input: string) =
     let parts = input.Split("\n\n")
