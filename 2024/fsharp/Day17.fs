@@ -63,38 +63,38 @@ let dv (num: int64) (denom: int64) = num / int64 (2.0 ** float denom)
 
 let perform computer instruction =
     match instruction with
-    | Adv c ->
+    | Adv operand ->
         { computer with
-            a = dv computer.a (comboValue computer c)
+            a = dv computer.a (comboValue computer operand)
             ip = computer.ip + 2 }
-    | Bdv c ->
+    | Bdv operand ->
         { computer with
-            b = dv computer.a (comboValue computer c)
+            b = dv computer.a (comboValue computer operand)
             ip = computer.ip + 2 }
-    | Cdv c ->
+    | Cdv operand ->
         { computer with
-            c = dv computer.a (comboValue computer c)
+            c = dv computer.a (comboValue computer operand)
             ip = computer.ip + 2 }
-    | Bxl i ->
+    | Bxl operand ->
         { computer with
-            b = computer.b ^^^ i
+            b = computer.b ^^^ operand
             ip = computer.ip + 2 }
-    | Bst c ->
+    | Bst operand ->
         { computer with
-            b = (comboValue computer c) % 8L
+            b = (comboValue computer operand) % 8L
             ip = computer.ip + 2 }
-    | Jnz i ->
+    | Jnz operand ->
         if computer.a = 0L then
             { computer with ip = computer.ip + 2 }
         else
-            { computer with ip = int i }
+            { computer with ip = int operand }
     | Bxc _ ->
         { computer with
             b = computer.b ^^^ computer.c
             ip = computer.ip + 2 }
-    | Out c ->
+    | Out operand ->
         { computer with
-            output = computer.output @ [ (comboValue computer c) % 8L ]
+            output = computer.output @ [ (comboValue computer operand) % 8L ]
             ip = computer.ip + 2 }
 
 let next computer =
