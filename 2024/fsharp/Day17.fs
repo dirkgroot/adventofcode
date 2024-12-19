@@ -102,6 +102,13 @@ let next computer =
     let operand = computer.program[computer.ip + 1]
     perform computer (parseInstruction opcode operand)
 
+[<TailCall>]
+let rec run computer =
+    if computer.ip >= computer.program.Length then
+        computer
+    else
+        run (next computer)
+
 let parse (input: string) =
     let parts = input.Split("\n\n")
 
@@ -118,13 +125,6 @@ let parse (input: string) =
       ip = 0
       output = []
       program = program }
-
-[<TailCall>]
-let rec run computer =
-    if computer.ip >= computer.program.Length then
-        computer
-    else
-        run (next computer)
 
 let part1 (input: string) =
     let c = input |> parse |> run
