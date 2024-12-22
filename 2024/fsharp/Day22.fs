@@ -3,6 +3,7 @@ module AoC.Day22
 open System.Collections.Generic
 open AoC
 open AoC.Puzzle
+open AoC.Utils
 open FsUnitTyped
 open Xunit
 
@@ -25,29 +26,34 @@ let part1 (input: string) =
         |> Seq.last)
     |> Seq.sum
 
-let optimalSequence (changes: (int64 * int64) list list) =
+let optimalSequence (changes: (struct (int64 * int64)) list list) =
     let dictionaries =
         changes
         |> Seq.map (fun c ->
             c
             |> Seq.windowed 4
             |> Seq.fold
-                (fun (acc: Dictionary<int64 * int64 * int64 * int64, int64>) sequence ->
-                    let key = sequence |> Array.map snd |> (fun a -> a[0], a[1], a[2], a[3])
-                    let value = sequence |> Seq.last |> fst
+                (fun (acc: Dictionary<struct (int64 * int64 * int64 * int64), int64>) sequence ->
+                    let key = sequence |> Array.map sndv |> (fun a -> struct (a[0], a[1], a[2], a[3]))
+                    let value = sequence |> Seq.last |> fstv
 
                     if not (acc.ContainsKey(key)) then
                         acc[key] <- value
 
                     acc)
-                (Dictionary<int64 * int64 * int64 * int64, int64>()))
+                (Dictionary<struct (int64 * int64 * int64 * int64), int64>()))
         |> Seq.toList
 
+    let totals = Dictionary<struct (int64 * int64 * int64 * int64), int64>()
+
     dictionaries
-    |> Seq.collect _.Keys
-    |> Seq.distinct
-    |> Seq.map (fun sequence -> dictionaries |> Seq.map _.GetValueOrDefault(sequence, 0L) |> Seq.sum)
-    |> Seq.max
+    |> Seq.iter (fun d ->
+        d
+        |> Seq.iter (fun i ->
+            let total = totals.GetValueOrDefault(i.Key) + i.Value
+            totals[i.Key] <- total))
+
+    totals.Values |> Seq.max
 
 let part2 (input: string) =
     let changes =
@@ -55,7 +61,11 @@ let part2 (input: string) =
         |> parse
         |> Seq.map (fun initial -> Seq.unfold (fun prev -> Some(prev, next prev)) initial |> Seq.take 2001)
         |> Seq.map (fun secrets -> secrets |> Seq.map (fun secret -> secret % 10L))
-        |> Seq.map (fun prices -> prices |> Seq.pairwise |> Seq.map (fun (a, b) -> b, b - a) |> Seq.toList)
+        |> Seq.map (fun prices ->
+            prices
+            |> Seq.pairwise
+            |> Seq.map (fun (a, b) -> struct (b, b - a))
+            |> Seq.toList)
         |> Seq.toList
 
     optimalSequence changes
