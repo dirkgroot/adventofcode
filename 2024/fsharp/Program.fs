@@ -32,11 +32,11 @@ let log timedSolve =
     | Day day -> printf $"%3d{day}"
 
     printf " | "
-    printf $"%-30O{timedSolve.Solution1}"
+    printf $"%-40O{timedSolve.Solution1}"
     printf " | "
     printf $"%-14f{timedSolve.Elapsed1.TotalMilliseconds}"
     printf " | "
-    printf $"%-30O{timedSolve.Solution2}"
+    printf $"%-40O{timedSolve.Solution2}"
     printf " | "
     printfn $"%-14f{timedSolve.Elapsed2.TotalMilliseconds}"
 
@@ -44,8 +44,8 @@ let logTimedSolve day part1 part2 = Day day |> withInput FromFile |> timedSolveW
 
 [<EntryPoint>]
 let main _ =
-    printfn "Day | Solution 1                     | Time (ms)      | Solution 2                     | Time (ms)      "
-    printfn "----+--------------------------------+----------------+--------------------------------+----------------"
+    printfn "Day | Solution 1                               | Time (ms)      | Solution 2                               | Time (ms)      "
+    printfn "----+------------------------------------------+----------------+------------------------------------------+----------------"
 
     logTimedSolve 00 Day00.part1 Day00.part2
     logTimedSolve 01 Day01.part1 Day01.part2
@@ -69,5 +69,6 @@ let main _ =
     logTimedSolve 20 (Day20.part1 100) (Day20.part2 100)
     logTimedSolve 21 Day21.part1 Day21.part2
     logTimedSolve 22 Day22.part1 Day22.part2
+    logTimedSolve 23 Day23.part1 Day23.part2
 
     0
