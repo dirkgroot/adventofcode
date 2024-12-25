@@ -71,5 +71,6 @@ let main _ =
     logTimedSolve 22 Day22.part1 Day22.part2
     logTimedSolve 23 Day23.part1 Day23.part2
     logTimedSolve 24 Day24.part1 Day24.part2
+    logTimedSolve 25 Day25.part1 (fun _ -> "Goodbye AoC, until next year!")
 
     0
