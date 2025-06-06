@@ -3,7 +3,7 @@
   :url "https://github.com/dirkgroot/adventofcode"
   :license {:name "MIT"
             :url  "https://github.com/dirkgroot/adventofcode-clojure/blob/main/LICENSE"}
-  :dependencies [[org.clojure/clojure "1.12.0"]
+  :dependencies [[org.clojure/clojure "1.12.1"]
                  [org.clojure/data.priority-map "1.2.0"]]
   :repl-options {:init-ns adventofcode-clojure.core}
   :test-selectors {:2020 [(fn [n & _]
