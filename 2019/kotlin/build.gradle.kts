@@ -21,7 +21,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.12.2")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.28.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.12.2")
-    testRuntimeOnly("org.junit.platform:junit-platform-console:1.12.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-console:1.13.2")
 }
 
 tasks {
