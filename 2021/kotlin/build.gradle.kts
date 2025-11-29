@@ -17,11 +17,11 @@ dependencies {
 
     testImplementation("io.kotest:kotest-runner-junit5:6.0.5")
     testImplementation("io.kotest:kotest-property:6.0.5")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:6.0.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:6.0.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:6.0.1")
     testImplementation("com.willowtreeapps.assertk:assertk-jvm:0.28.1")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.0")
-    testRuntimeOnly("org.junit.platform:junit-platform-console:6.0.0")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:6.0.1")
+    testRuntimeOnly("org.junit.platform:junit-platform-console:6.0.1")
 }
 
 tasks {
