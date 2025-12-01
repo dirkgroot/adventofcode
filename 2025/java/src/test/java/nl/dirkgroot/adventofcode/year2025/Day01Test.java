@@ -21,15 +21,12 @@ public class Day01Test implements AoCTest {
 
     private static State doRotations(String input) {
         return input.lines()
-                .map(line -> line.charAt(0) == 'L'
-                        ? -Integer.parseInt(line.substring(1))
-                        : Integer.parseInt(line.substring(1)))
                 .gather(Gatherers.fold(() -> new State(50, 0, 0), (state, rotate) -> {
                     var dial = state.dial;
-                    var step = (rotate > 0) ? 1 : -1;
+                    var step = (rotate.charAt(0) == 'R') ? 1 : -1;
                     var passedZero = 0;
 
-                    for (var i = 0; i < Math.abs(rotate); i++) {
+                    for (var i = 0; i < Integer.parseInt(rotate.substring(1)); i++) {
                         dial = (dial + step) % 100;
                         if (dial == 0) passedZero++;
                     }
