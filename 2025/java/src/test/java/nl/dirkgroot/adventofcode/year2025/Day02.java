@@ -8,7 +8,7 @@ import java.util.stream.LongStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Day02Test implements AoCTest {
+public class Day02 implements AoCTest {
     long part1(String input) {
         return allNumbers(input)
                 .filter(n -> {
@@ -55,13 +55,13 @@ public class Day02Test implements AoCTest {
 
     @Test
     public void part1Test() {
-        assertEquals(1227775554L, part1(EXAMPLE));
-        assertEquals(29940924880L, part1(input(2)));
+        assertEquals(1227775554L, invokeWith(this::part1, EXAMPLE));
+        assertEquals(29940924880L, invokeWith(this::part1, input(2)));
     }
 
     @Test
     public void part2Test() {
-        assertEquals(4174379265L, part2(EXAMPLE));
-        assertEquals(48631958998L, part2(input(2)));
+        assertEquals(4174379265L, invokeWith(this::part2, EXAMPLE));
+        assertEquals(48631958998L, invokeWith(this::part2, input(2)));
     }
 }

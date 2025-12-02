@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.stream.Gatherers;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class Day01Test implements AoCTest {
+public class Day01 implements AoCTest {
     record State(int dial, int stoppedAtZero, int passedZero) {
     }
 
@@ -49,22 +49,14 @@ public class Day01Test implements AoCTest {
             L82""";
 
     @Test
-    public void part1Example() {
-        assertThat(invokeWith(this::part1, EXAMPLE)).isEqualTo(3);
+    public void part1Test() {
+        assertEquals(3, invokeWith(this::part1, EXAMPLE));
+        assertEquals(1043, invokeWith(this::part1, input(1)));
     }
 
     @Test
-    public void part1Solution() {
-        assertThat(invokeWith(this::part1, input(1))).isEqualTo(1043);
-    }
-
-    @Test
-    public void part2Example() {
-        assertThat(invokeWith(this::part2, EXAMPLE)).isEqualTo(6);
-    }
-
-    @Test
-    public void part2Solution() {
-        assertThat(invokeWith(this::part2, input(1))).isEqualTo(5963);
+    public void part2Test() {
+        assertEquals(6, invokeWith(this::part2, EXAMPLE));
+        assertEquals(5963, invokeWith(this::part2, input(1)));
     }
 }
