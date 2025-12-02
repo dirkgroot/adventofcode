@@ -37,13 +37,13 @@ const allNumbers = (input: string): number[] =>
     .flatMap(([min, max]) => [...Array(max - min + 1).keys()].map(i => min + i));
 
 describe('Day 02', () => {
-  test('Example', async () => {
+  test('Part 1', async () => {
     expect(part1(EXAMPLE)).toEqual(1227775554);
-    expect(part2(EXAMPLE)).toEqual(4174379265);
+    expect(part1(await input(2))).toEqual(29940924880);
   });
 
-  test('Real input', async () => {
-    expect(part1(await input(2))).toEqual(29940924880);
+  test('Part 2', async () => {
+    expect(part2(EXAMPLE)).toEqual(4174379265);
     expect(part2(await input(2))).toEqual(48631958998);
   });
 });
