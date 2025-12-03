@@ -20,8 +20,7 @@ public class Day03 implements AoCTest {
     private long maxJoltage(String input, int batteryCount) {
         return input.lines()
                 .map(line -> line.chars().map(c -> Character.digit(c, 10)).toArray())
-                .map(batteries -> maxJoltage(batteries, 0, batteryCount))
-                .mapToLong(i -> i)
+                .mapToLong(batteries -> maxJoltage(batteries, 0, batteryCount))
                 .sum();
     }
 
