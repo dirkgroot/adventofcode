@@ -34,18 +34,16 @@ public class Day05 implements AoCTest {
         ranges.sort(Comparator.comparingLong(Range::first));
 
         var count = 0L;
-        var first = 1L;
         var last = 0L;
         for (var r : ranges) {
             if (r.first > last) {
-                count += last - first + 1;
-                first = r.first;
+                count += r.last - r.first + 1;
                 last = r.last;
             } else if (r.last > last) {
+                count += r.last - last;
                 last = r.last;
             }
         }
-        count += last - first + 1;
 
         return count;
     }
